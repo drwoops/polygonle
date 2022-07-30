@@ -5,22 +5,10 @@ type Props = {
 }
 
 export const Puzzle = ({solution}: Props) => {
-  let colors = [
-    "#F94144",
-    "#F3722C",
-    "#F8961E",
-    "#F9844A",
-    "#F9C74F",
-    "#90BE6D",
-    "#43AA8B",
-    "#4D908E",
-    "#577590",
-    "#277DA1"]
+  let colors = ["#CF2B52", "#FD8C44", "#FEC04F", "#2DA4A8", "#296094", "#3F1F56"]
   colors = shuffleSeed.shuffle(colors, solution); // seed with solution for stability
 
-  let shapes = [
-    '■', '▪', '◆', '◢', '◣', '◤', '◥'
-  ];
+  let shapes = ['■', '▪', '◆', '◢', '◣', '◤', '◥'];
   shapes = shuffleSeed.shuffle(shapes, solution); // seed with solution for stability
 
 
