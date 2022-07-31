@@ -65,6 +65,14 @@ export const InfoModal = ({ isOpen, handleClose }: Props) => {
       <p className="text-sm text-gray-500 dark:text-gray-300">
         The letter I is not in the word in any spot.
       </p>
+      <div className="mt-6 italic text-sm text-gray-500 dark:text-gray-300">
+      	Based on the open source {' '} <a
+          href="https://github.com/cwackerfuss/react-wordle"
+          className="underline font-bold"
+        >react-wordle
+        </a>{' '}
+       	project.
+      </div>
     </BaseModal>
-  )
+		)
 }

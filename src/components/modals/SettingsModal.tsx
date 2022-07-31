@@ -47,6 +47,14 @@ export const SettingsModal = ({
           description={HIGH_CONTRAST_MODE_DESCRIPTION}
         />
       </div>
+      <div className="flex justify-between mt-4 py-2 items-center text-sm">
+        <p className="text-gray-500 dark:text-gray-300 text-left">Feedback</p>
+        <a href="mailto:grant.warman+polygonle@gmail.com" target="_blank" rel="noreferrer" className="text-indigo-700">Email</a>
+      </div>
+      <div className="flex justify-between items-center text-sm">
+        <p className="text-gray-500 dark:text-gray-300 text-left">Report Bugs</p>
+        <a href="https://github.com/Grantismo/polygonle/issues" target="_blank" rel="noreferrer" className="text-indigo-700">Github</a>
+      </div>
     </BaseModal>
   )
 }
