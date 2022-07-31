@@ -126,8 +126,7 @@ export const getWordOfDay = (index: number) => {
   return localeAwareUpperCase(WORDS[index % WORDS.length])
 }
 
-export const getPuzzleOfDay = (index: number) => {
-  const solution = getWordOfDay(index)
+export const getPuzzle = (solution: string) => {
   let colors = ["#CF2B52", "#FD8C44", "#FEC04F", "#2DA4A8", "#296094", "#3F1F56"]
   colors = shuffleSeed.shuffle(colors, solution); // seed with solution for stability
 
@@ -140,6 +139,10 @@ export const getPuzzleOfDay = (index: number) => {
   }
 
   return Array.from(solution).map((c: String) => char2Shape.get(c))
+}
+
+export const getPuzzleOfDay = (index: number) => {
+  return getPuzzle(getWordOfDay(index))
 }
 
 export const getSolution = (today: Date) => {

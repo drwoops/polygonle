@@ -1524,7 +1524,6 @@ export const WORDS = [
 "obsessed",
 "twists",
 "prairie",
-"people",
 "someone",
 "appears",
 "gliding",

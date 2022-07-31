@@ -81,6 +81,10 @@ svg.cursor-pointer:hover {
   display: flex;
 }
 
+.title {
+  font-family: 'Josefin Sans', sans-serif;
+}
+
 @keyframes revealAbsentCharCell {
   0% {
     transform: rotateX(0deg);
