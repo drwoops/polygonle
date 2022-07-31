@@ -3,6 +3,12 @@ import { VALID_GUESSES } from '../constants/validGuesses'
 import { WRONG_SPOT_MESSAGE, NOT_CONTAINED_MESSAGE } from '../constants/strings'
 import { getGuessStatuses } from './statuses'
 import { default as GraphemeSplitter } from 'grapheme-splitter'
+import * as shuffleSeed from 'shuffle-seed';
+
+
+export class Shape {
+  constructor(readonly shape: string, readonly color: string){}
+}
 
 // 1 January 2022 Game Epoch
 export const firstGameDate = new Date(2022, 7, 29)
@@ -120,15 +126,33 @@ export const getWordOfDay = (index: number) => {
   return localeAwareUpperCase(WORDS[index % WORDS.length])
 }
 
+export const getPuzzleOfDay = (index: number) => {
+  const solution = getWordOfDay(index)
+  let colors = ["#CF2B52", "#FD8C44", "#FEC04F", "#2DA4A8", "#296094", "#3F1F56"]
+  colors = shuffleSeed.shuffle(colors, solution); // seed with solution for stability
+
+  let shapes = ['■', '▪', '◆', '◢', '◣', '◤', '◥'];
+  shapes = shuffleSeed.shuffle(shapes, solution); // seed with solution for stability
+  const chars = Array.from(new Set(solution))
+  const char2Shape = new Map()
+  for(let i = 0; i < chars.length; i++) {
+    char2Shape.set(chars[i], new Shape(shapes[i], colors[i]))
+  }
+
+  return Array.from(solution).map((c: String) => char2Shape.get(c))
+}
+
 export const getSolution = (today: Date) => {
   const nextGameDate = getNextGameDate(today)
   const index = getIndex(today)
   const wordOfTheDay = getWordOfDay(index)
+  const puzzleOfTheDay = getPuzzleOfDay(index)
   return {
     solution: wordOfTheDay,
+    puzzle: puzzleOfTheDay,
     solutionIndex: index,
     tomorrow: nextGameDate.valueOf(),
   }
 }
 
-export const { solution, solutionIndex, tomorrow } = getSolution(getToday())
+export const { solution, puzzle, solutionIndex, tomorrow} = getSolution(getToday())
