@@ -22,7 +22,6 @@ export const Grid = ({
     guesses.length < MAX_CHALLENGES - 1
       ? Array.from(Array(MAX_CHALLENGES - 1 - guesses.length))
       : []
-
   return (
     <>
       {guesses.map((guess, i) => (
@@ -34,10 +33,10 @@ export const Grid = ({
         />
       ))}
       {guesses.length < MAX_CHALLENGES && (
-        <CurrentRow guess={currentGuess} className={currentRowClassName} />
+        <CurrentRow solution={solution} guess={currentGuess} className={currentRowClassName} />
       )}
       {empties.map((_, i) => (
-        <EmptyRow key={i} />
+        <EmptyRow key={i} solution={solution} />
       ))}
     </>
   )

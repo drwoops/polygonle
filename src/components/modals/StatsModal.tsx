@@ -4,7 +4,7 @@ import { StatBar } from '../stats/StatBar'
 import { Histogram } from '../stats/Histogram'
 import { GameStats } from '../../lib/localStorage'
 import { shareStatus } from '../../lib/share'
-import { tomorrow } from '../../lib/words'
+import { getTomorrow, Solution } from '../../lib/words'
 import { BaseModal } from './BaseModal'
 import {
   STATISTICS_TITLE,
@@ -18,7 +18,7 @@ import { ENABLE_MIGRATE_STATS } from '../../constants/settings'
 type Props = {
   isOpen: boolean
   handleClose: () => void
-  solution: string
+  solution: Solution
   guesses: string[]
   gameStats: GameStats
   isGameLost: boolean
@@ -50,6 +50,7 @@ export const StatsModal = ({
   isHighContrastMode,
   numberOfGuessesMade,
 }: Props) => {
+  const tomorrow = getTomorrow() 
   if (gameStats.totalGames <= 0) {
     return (
       <BaseModal

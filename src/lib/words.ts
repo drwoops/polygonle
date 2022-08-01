@@ -15,6 +15,10 @@ export class Shape {
   constructor(readonly shape: string, readonly label: string){}
 }
 
+export class Solution {
+  constructor(readonly word: string, readonly puzzle: Shape[], readonly index: number){}
+}
+
 // 1 January 2022 Game Epoch
 export const firstGameDate = new Date(2022, 6, 31)
 export const periodInDays = 1
@@ -26,14 +30,10 @@ export const isWordInWordList = (word: string) => {
   )
 }
 
-export const isWinningWord = (word: string) => {
-  return solution === word
-}
-
 // build a set of previously revealed letters - present and correct
 // guess must use correct letters in that space and any other revealed letters
 // also check if all revealed instances of a letter are used (i.e. two C's)
-export const findFirstUnusedReveal = (word: string, guesses: string[]) => {
+export const findFirstUnusedReveal = (solution: string, word: string, guesses: string[]) => {
   if (guesses.length === 0) {
     return false
   }
@@ -93,6 +93,10 @@ export const getToday = () => {
   const today = new Date()
   today.setHours(0, 0, 0, 0)
   return today
+}
+
+export const getTomorrow = () => {
+  return getNextGameDate(getToday())
 }
 
 export const getLastGameDate = (today: Date) => {
@@ -171,17 +175,12 @@ export const getPuzzleOfDay = (index: number) => {
   return getPuzzle(getWordOfDay(index))
 }
 
-export const getSolution = (today: Date) => {
-  const nextGameDate = getNextGameDate(today)
-  const index = getIndex(today)
-  const wordOfTheDay = getWordOfDay(index)
-  const puzzleOfTheDay = getPuzzleOfDay(index)
-  return {
-    solution: wordOfTheDay,
-    puzzle: puzzleOfTheDay,
-    solutionIndex: index,
-    tomorrow: nextGameDate.valueOf(),
-  }
+export const getDailySolution = (today: Date) => {
+  return getSolution(getIndex(today))
 }
 
-export const { solution, puzzle, solutionIndex, tomorrow} = getSolution(getToday())
+export const getSolution = (index: number) => {
+  const wordOfTheDay = getWordOfDay(index)
+  const puzzleOfTheDay = getPuzzleOfDay(index)
+  return new Solution(wordOfTheDay, puzzleOfTheDay, index);
+}

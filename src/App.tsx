@@ -19,6 +19,7 @@ import {
   DISCOURAGE_INAPP_BROWSER_TEXT,
   SHARE_FAILURE_TEXT,
   GAME_MODE_DAILY,
+  GAME_MODE_UNLIMITED,
 } from './constants/strings'
 import {
   MAX_CHALLENGES,
@@ -29,14 +30,12 @@ import {
 } from './constants/settings'
 import {
   isWordInWordList,
-  isWinningWord,
-  solution,
-  solutionIndex,
   getPuzzle,
   getPattern,
-  puzzle,
+  getDailySolution,
   findFirstUnusedReveal,
   unicodeLength,
+  getToday,
 } from './lib/words'
 import { addStatsForCompletedGame, loadStats } from './lib/stats'
 import {
@@ -99,19 +98,30 @@ function App() {
   )
   const [isRevealing, setIsRevealing] = useState(false)
 
+  // get current solution (based on unlimited mode vs. daily
+  const solution = (() => {
+    switch (gameMode) {
+      case GAME_MODE_UNLIMITED:
+        return getDailySolution(getToday())
+      case GAME_MODE_DAILY:
+      default:
+        return getDailySolution(getToday())
+    }
+  })()
+
   // get current game
   const [guesses, setGuesses] = useState<string[]>(() => {
     const loaded = loadGameStateFromLocalStorage()
-    if (loaded?.solution !== solution) {
+    if (loaded?.solution !== solution.word) {
       return []
     }
-    const gameWasWon = loaded.guesses.includes(solution)
+    const gameWasWon = loaded.guesses.includes(solution.word)
     if (gameWasWon) {
       setIsGameWon(true)
     }
     if (loaded.guesses.length === MAX_CHALLENGES && !gameWasWon) {
       setIsGameLost(true)
-      showErrorAlert(CORRECT_WORD_MESSAGE(solution), {
+      showErrorAlert(CORRECT_WORD_MESSAGE(solution.word), {
         persist: true,
       })
     }
@@ -198,7 +208,6 @@ function App() {
   }
 
   const handleExpertMode = (isExpert: boolean) => {
-    debugger
     if (
       guesses.length === 0 ||
       localStorage.getItem(EXPERT_MODE_KEY) === EXPERT_MODE_EXPERT
@@ -224,14 +233,14 @@ function App() {
   }
 
   useEffect(() => {
-    saveGameStateToLocalStorage({ guesses, solution })
-  }, [guesses])
+    saveGameStateToLocalStorage({ guesses, solution: solution.word })
+  }, [guesses, solution.word])
 
   useEffect(() => {
     if (isGameWon) {
       const winMessage =
         WIN_MESSAGES[Math.floor(Math.random() * WIN_MESSAGES.length)]
-      const delayMs = REVEAL_TIME_MS * solution.length
+      const delayMs = REVEAL_TIME_MS * solution.word.length
 
       showSuccessAlert(winMessage, {
         delayMs,
@@ -242,13 +251,13 @@ function App() {
     if (isGameLost) {
       setTimeout(() => {
         setIsStatsModalOpen(true)
-      }, (solution.length + 1) * REVEAL_TIME_MS)
+      }, (solution.word.length + 1) * REVEAL_TIME_MS)
     }
-  }, [isGameWon, isGameLost, showSuccessAlert])
+  }, [isGameWon, isGameLost, showSuccessAlert, solution.word.length])
 
   const onChar = (value: string) => {
     if (
-      unicodeLength(`${currentGuess}${value}`) <= solution.length &&
+      unicodeLength(`${currentGuess}${value}`) <= solution.word.length &&
       guesses.length < MAX_CHALLENGES &&
       !isGameWon
     ) {
@@ -267,7 +276,7 @@ function App() {
       return
     }
 
-    if (!(unicodeLength(currentGuess) === solution.length)) {
+    if (!(unicodeLength(currentGuess) === solution.word.length)) {
       setCurrentRowClass('jiggle')
       return showErrorAlert(NOT_ENOUGH_LETTERS_MESSAGE, {
         onClose: clearCurrentRowClass,
@@ -283,7 +292,11 @@ function App() {
 
     // enforce hard mode - all guesses must contain all previously revealed letters
     if (isHardMode) {
-      const firstMissingReveal = findFirstUnusedReveal(currentGuess, guesses)
+      const firstMissingReveal = findFirstUnusedReveal(
+        solution.word,
+        currentGuess,
+        guesses
+      )
       if (firstMissingReveal) {
         setCurrentRowClass('jiggle')
         return showErrorAlert(firstMissingReveal, {
@@ -296,8 +309,8 @@ function App() {
     if (
       isExpertMode &&
       getPattern(
-        getPuzzle(currentGuess, /* seed to compare patterns */ solution)
-      ) !== getPattern(puzzle)
+        getPuzzle(currentGuess, /* seed to compare patterns */ solution.word)
+      ) !== getPattern(solution.puzzle)
     ) {
       return showErrorAlert(PATTERN_MUST_MATCH_MESSAGE, {
         onClose: clearCurrentRowClass,
@@ -309,12 +322,12 @@ function App() {
     // chars have been revealed
     setTimeout(() => {
       setIsRevealing(false)
-    }, REVEAL_TIME_MS * solution.length)
+    }, REVEAL_TIME_MS * solution.word.length)
 
-    const winningWord = isWinningWord(currentGuess)
+    const winningWord = currentGuess === solution.word
 
     if (
-      unicodeLength(currentGuess) === solution.length &&
+      unicodeLength(currentGuess) === solution.word.length &&
       guesses.length < MAX_CHALLENGES &&
       !isGameWon
     ) {
@@ -329,9 +342,9 @@ function App() {
       if (guesses.length === MAX_CHALLENGES - 1) {
         setStats(addStatsForCompletedGame(stats, guesses.length + 1))
         setIsGameLost(true)
-        showErrorAlert(CORRECT_WORD_MESSAGE(solution), {
+        showErrorAlert(CORRECT_WORD_MESSAGE(solution.word), {
           persist: true,
-          delayMs: REVEAL_TIME_MS * solution.length + 1,
+          delayMs: REVEAL_TIME_MS * solution.word.length + 1,
         })
       }
     }
@@ -345,13 +358,13 @@ function App() {
         setIsSettingsModalOpen={setIsSettingsModalOpen}
         setIsSupportModalOpen={setIsSupportModalOpen}
         gameMode={gameMode}
-        solutionIndex={solutionIndex}
+        solutionIndex={solution.index}
       />
       <div className="pt-2 px-1 pb-8 md:max-w-7xl w-full mx-auto sm:px-6 lg:px-8 flex flex-col grow">
         <div className="pb-6 grow">
-          <Puzzle puzzle={puzzle} />
+          <Puzzle puzzle={solution.puzzle} />
           <Grid
-            solution={solution}
+            solution={solution.word}
             guesses={guesses}
             currentGuess={currentGuess}
             isRevealing={isRevealing}
@@ -362,7 +375,7 @@ function App() {
           onChar={onChar}
           onDelete={onDelete}
           onEnter={onEnter}
-          solution={solution}
+          solution={solution.word}
           guesses={guesses}
           isRevealing={isRevealing}
         />

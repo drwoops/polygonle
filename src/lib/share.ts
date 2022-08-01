@@ -1,5 +1,5 @@
 import { getGuessStatuses } from './statuses'
-import { solutionIndex, unicodeSplit, puzzle, Shape} from './words'
+import { unicodeSplit, Shape, Solution} from './words'
 import { GAME_TITLE } from '../constants/strings'
 import { MAX_CHALLENGES } from '../constants/settings'
 import { UAParser } from 'ua-parser-js'
@@ -10,7 +10,7 @@ const browser = parser.getBrowser()
 const device = parser.getDevice()
 
 export const shareStatus = (
-  solution: string,
+  solution: Solution,
   guesses: string[],
   lost: boolean,
   isHardMode: boolean,
@@ -30,14 +30,14 @@ export const shareStatus = (
   }
 
   const textToShare =
-    `#${GAME_TITLE} ${solutionIndex} ${
+    `#${GAME_TITLE} ${solution.index} ${
       lost ? 'X' : guesses.length
     }/${MAX_CHALLENGES}${modesSymbol}\n\n` +
     'www.polygonle.com\n'
     +
-    `${puzzle.map((s: Shape) => s.shape).join('')}\n` + 
+    `${solution.puzzle.map((s: Shape) => s.shape).join('')}\n` + 
     generateEmojiGrid(
-      solution,
+      solution.word,
       guesses,
       getEmojiTiles(isDarkMode, isExpertMode, isHighContrastMode)
     )
