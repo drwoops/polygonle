@@ -11,6 +11,7 @@ type Props = {
   setIsSettingsModalOpen: (value: boolean) => void
   setIsSupportModalOpen: (value: boolean) => void
   gameMode: string
+  solutionIndex: number
 }
 
 export const Navbar = ({
@@ -19,6 +20,7 @@ export const Navbar = ({
   setIsSettingsModalOpen,
   setIsSupportModalOpen,
   gameMode,
+  solutionIndex,
 }: Props) => {
   return (
     <div className="navbar">
@@ -37,8 +39,8 @@ export const Navbar = ({
             ☕
           </button>
         </div>
-        <p className="text-xl ml-2.5 font-bold title dark:text-white relative">{GAME_TITLE}
-  {gameMode === GAME_MODE_DAILY ? (<span className="text-base text-gray-500 dark:text-gray-300 title absolute leading-7 -right-5">#1</span>): (<span className="text-xl text-gray-500 dark:text-gray-300 absolute leading-7 -right-5">∞</span>)}
+        <p className="text-xl font-bold title dark:text-white relative mt-1">{GAME_TITLE}
+  {gameMode === GAME_MODE_DAILY ? (<span className="text-sm text-gray-500 dark:text-gray-300 title absolute leading-7 left-24">#{solutionIndex}</span>): (<span className="text-xl text-gray-500 dark:text-gray-300 absolute leading-7 left-24">∞</span>)}
           
       </p>
         <div className="icon-group">

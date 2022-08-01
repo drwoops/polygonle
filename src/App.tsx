@@ -31,6 +31,7 @@ import {
   isWordInWordList,
   isWinningWord,
   solution,
+  solutionIndex,
   getPuzzle,
   getPattern,
   puzzle,
@@ -97,6 +98,8 @@ function App() {
     getStoredIsHighContrastMode()
   )
   const [isRevealing, setIsRevealing] = useState(false)
+
+  // get current game
   const [guesses, setGuesses] = useState<string[]>(() => {
     const loaded = loadGameStateFromLocalStorage()
     if (loaded?.solution !== solution) {
@@ -342,6 +345,7 @@ function App() {
         setIsSettingsModalOpen={setIsSettingsModalOpen}
         setIsSupportModalOpen={setIsSupportModalOpen}
         gameMode={gameMode}
+        solutionIndex={solutionIndex}
       />
       <div className="pt-2 px-1 pb-8 md:max-w-7xl w-full mx-auto sm:px-6 lg:px-8 flex flex-col grow">
         <div className="pb-6 grow">
