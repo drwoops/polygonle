@@ -11,7 +11,7 @@ export class Shape {
 }
 
 // 1 January 2022 Game Epoch
-export const firstGameDate = new Date(2022, 7, 29)
+export const firstGameDate = new Date(2022, 6, 31)
 export const periodInDays = 1
 
 export const isWordInWordList = (word: string) => {
@@ -150,6 +150,8 @@ export const getSolution = (today: Date) => {
   const index = getIndex(today)
   const wordOfTheDay = getWordOfDay(index)
   const puzzleOfTheDay = getPuzzleOfDay(index)
+  console.log(`today: ${today}`)
+  console.log(`today's index: ${index}`)
   return {
     solution: wordOfTheDay,
     puzzle: puzzleOfTheDay,
