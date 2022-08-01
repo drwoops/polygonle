@@ -1,5 +1,6 @@
 import { BaseModal } from './BaseModal'
 import { SettingsToggle } from './SettingsToggle'
+import { ButtonToggle } from './ButtonToggle'
 import {
   HARD_MODE_DESCRIPTION,
   HIGH_CONTRAST_MODE_DESCRIPTION,
@@ -57,6 +58,13 @@ export const SettingsModal = ({
           handleFlag={handleHighContrastMode}
           description={HIGH_CONTRAST_MODE_DESCRIPTION}
         />
+        <ButtonToggle
+          settingName="Game Mode"
+          selected="Daily"
+          flagValues={["Daily","Unlimited"]}
+          handleFlag={()=>{}}
+        />
+
       </div>
       <div className="flex justify-between mt-4 py-2 items-center text-sm">
         <p className="text-gray-500 dark:text-gray-300 text-left">Feedback</p>
