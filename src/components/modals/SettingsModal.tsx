@@ -5,6 +5,7 @@ import {
   HARD_MODE_DESCRIPTION,
   HIGH_CONTRAST_MODE_DESCRIPTION,
   EXPERT_MODE_DESCRIPTION,
+  GAME_MODES,
 } from '../../constants/strings'
 
 type Props = {
@@ -18,6 +19,8 @@ type Props = {
   handleDarkMode: Function
   isHighContrastMode: boolean
   handleHighContrastMode: Function
+  gameMode: string
+  handleGameMode: Function
 }
 
 export const SettingsModal = ({
@@ -31,6 +34,8 @@ export const SettingsModal = ({
   handleDarkMode,
   isHighContrastMode,
   handleHighContrastMode,
+  gameMode,
+  handleGameMode
 }: Props) => {
   return (
     <BaseModal title="Settings" isOpen={isOpen} handleClose={handleClose}>
@@ -60,9 +65,9 @@ export const SettingsModal = ({
         />
         <ButtonToggle
           settingName="Game Mode"
-          selected="Daily"
-          flagValues={["Daily","Unlimited"]}
-          handleFlag={()=>{}}
+          selected={gameMode}
+          flagValues={GAME_MODES}
+          handleFlag={handleGameMode}
         />
 
       </div>
