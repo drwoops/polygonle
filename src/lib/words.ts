@@ -150,8 +150,6 @@ export const getSolution = (today: Date) => {
   const index = getIndex(today)
   const wordOfTheDay = getWordOfDay(index)
   const puzzleOfTheDay = getPuzzleOfDay(index)
-  console.log(`today: ${today}`)
-  console.log(`today's index: ${index}`)
   return {
     solution: wordOfTheDay,
     puzzle: puzzleOfTheDay,
