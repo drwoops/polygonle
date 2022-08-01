@@ -367,6 +367,7 @@ function App() {
             setIsMigrateStatsModalOpen(true)
           }}
           isHardMode={isHardMode}
+          isExpertMode={isExpertMode}
           isDarkMode={isDarkMode}
           isHighContrastMode={isHighContrastMode}
           numberOfGuessesMade={guesses.length}
@@ -380,12 +381,12 @@ function App() {
           handleClose={() => setIsSettingsModalOpen(false)}
           isHardMode={isHardMode}
           handleHardMode={handleHardMode}
+          isExpertMode={isExpertMode}
+          handleExpertMode={handleExpertMode}
           isDarkMode={isDarkMode}
           handleDarkMode={handleDarkMode}
           isHighContrastMode={isHighContrastMode}
           handleHighContrastMode={handleHighContrastMode}
-          isExpertMode={isExpertMode}
-          handleExpertMode={handleExpertMode}
         />
         <AlertContainer />
       </div>

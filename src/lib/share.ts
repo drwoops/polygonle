@@ -14,15 +14,19 @@ export const shareStatus = (
   guesses: string[],
   lost: boolean,
   isHardMode: boolean,
+  isExpertMode: boolean,
   isDarkMode: boolean,
   isHighContrastMode: boolean,
   handleShareToClipboard: () => void,
   handleShareFailure: () => void
 ) => {
+  const hardModeSymbol = isHardMode ? '*' : '';
+  const expertModeSymbol = isExpertMode ? '◆' : '';
+
   const textToShare =
     `${GAME_TITLE} ${solutionIndex} ${
       lost ? 'X' : guesses.length
-    }/${MAX_CHALLENGES}${isHardMode ? '*' : ''}\n\n` +
+    }/${MAX_CHALLENGES}${hardModeSymbol}${expertModeSymbol}\n\n` +
     `${puzzle.map((s: Shape) => s.shape).join('')}\n` + 
     generateEmojiGrid(
       solution,
