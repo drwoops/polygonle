@@ -29,14 +29,15 @@ import {
   LONG_ALERT_TIME_MS,
 } from './constants/settings'
 import {
-  isWordInWordList,
-  getPuzzle,
-  getPattern,
-  getDailySolution,
-  getSolution,
   findFirstUnusedReveal,
-  unicodeLength,
+  getDailySolution,
+  getNextUnlimitedHash,
+  getPattern,
+  getPuzzle,
+  getSolutionFromHash,
   getToday,
+  isWordInWordList,
+  unicodeLength,
 } from './lib/words'
 import { addStatsForCompletedGame, loadStats } from './lib/stats'
 import {
@@ -77,7 +78,7 @@ function App() {
 
   const { showError: showErrorAlert, showSuccess: showSuccessAlert } =
     useAlert()
-  const { puzzleId } = useParams<{ puzzleId: string }>()
+  let { puzzleId } = useParams<{ puzzleId: string }>()
   const [currentGuess, setCurrentGuess] = useState('')
   const [isGameWon, setIsGameWon] = useState(false)
   const [isInfoModalOpen, setIsInfoModalOpen] = useState(false)
@@ -101,20 +102,31 @@ function App() {
   const [isRevealing, setIsRevealing] = useState(false)
 
   // get current solution (based on unlimited mode vs. daily
-  const solution = (() => {
+  const fetchedSolution = (() => {
     switch (gameMode) {
       case GAME_MODE_UNLIMITED:
-        return getSolution(parseInt(puzzleId!))
+        if (!puzzleId) {
+          puzzleId = getNextUnlimitedHash(0, 'blah')
+          window.history.pushState({}, '', `/${puzzleId}`)
+        }
+        return getSolutionFromHash(puzzleId!)
       case GAME_MODE_DAILY:
       default:
         return getDailySolution(getToday())
     }
   })()
 
+  if (!fetchedSolution) {
+    throw new Error('puzzle not found')
+  }
+
+  const solution = fetchedSolution!
+
   // get current game
   const [guesses, setGuesses] = useState<string[]>(() => {
     const loaded = loadGameStateFromLocalStorage()
     if (loaded?.solution !== solution.word) {
+      // TODO wipe storage?
       return []
     }
     const gameWasWon = loaded.guesses.includes(solution.word)

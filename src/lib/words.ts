@@ -4,6 +4,7 @@ import { WRONG_SPOT_MESSAGE, NOT_CONTAINED_MESSAGE } from '../constants/strings'
 import { getGuessStatuses } from './statuses'
 import { default as GraphemeSplitter } from 'grapheme-splitter'
 import * as shuffleSeed from 'shuffle-seed';
+import jsSHA from 'jssha/dist/sha3';
 
 export class Color {
   constructor(readonly hex: string, readonly label: string){}
@@ -19,6 +20,7 @@ export class Solution {
   constructor(readonly word: string, readonly puzzle: Shape[], readonly index: number){}
 }
 
+
 // 1 January 2022 Game Epoch
 export const firstGameDate = new Date(2022, 6, 31)
 export const periodInDays = 1
@@ -29,6 +31,7 @@ export const isWordInWordList = (word: string) => {
     VALID_GUESSES.includes(localeAwareLowerCase(word))
   )
 }
+
 
 // build a set of previously revealed letters - present and correct
 // guess must use correct letters in that space and any other revealed letters
@@ -171,16 +174,51 @@ export const getPattern = (puzzle: Shape[]) => {
   return puzzle.map((p) => p.shape).join('')
 }
 
-export const getPuzzleOfDay = (index: number) => {
-  return getPuzzle(getWordOfDay(index))
-}
-
 export const getDailySolution = (today: Date) => {
   return getSolution(getIndex(today))
 }
 
+export const hashWord = (word: string) => {
+ 	//@ts-ignore
+	const shaObj = new jsSHA("SHAKE256", "TEXT", { encoding: "UTF8"})
+	shaObj.update(word)
+	//@ts-ignore
+  return shaObj.getHash("HEX", {outputLen: 32})
+}
+
+const wordCache = new Map<string, string>()
+const wordToIndex = new Map<string, number>()
+const fillCache = () => {
+	WORDS.forEach((w: string, i: number) => {
+		wordCache.set(hashWord(w), w)
+		wordToIndex.set(w, i)
+	})
+}
+fillCache();
+
+let unlimitedWords: string[] = []
+export const getNextUnlimitedHash = (index: number, seed: string) => {
+  if(!unlimitedWords.length) {
+    unlimitedWords = shuffleSeed.shuffle(WORDS, seed)
+  }
+  if (getWordOfDay(getIndex(getToday())) === unlimitedWords[index]) {
+    index += 1
+  }
+  return hashWord(unlimitedWords[index])
+}
+
+
+export const getSolutionFromHash = (hash: string) => {
+  const word = wordCache.get(hash)
+  if(!word) {
+    return null
+  }
+  const puzzleOfTheDay = getPuzzle(word)
+  return new Solution(word, puzzleOfTheDay, wordToIndex.get(word) || 0);
+}
+
 export const getSolution = (index: number) => {
   const wordOfTheDay = getWordOfDay(index)
-  const puzzleOfTheDay = getPuzzleOfDay(index)
+  const puzzleOfTheDay = getPuzzle(wordOfTheDay)
   return new Solution(wordOfTheDay, puzzleOfTheDay, index);
 }

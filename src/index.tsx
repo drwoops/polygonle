@@ -2,19 +2,23 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import './index.css'
 import App from './App'
+import ErrorBoundary from './ErrorBoundary'
 import reportWebVitals from './reportWebVitals'
 import { AlertProvider } from './context/AlertContext'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 
 ReactDOM.render(
   <React.StrictMode>
-    <BrowserRouter>
+    <ErrorBoundary>
       <AlertProvider>
-        <Routes>
-          <Route path="/:puzzleId" element={<App />} />
-        </Routes>
+        <BrowserRouter>
+          <Routes>
+            <Route path="/:puzzleId" element={<App />} />
+            <Route path="*" element={<App />} />
+          </Routes>
+        </BrowserRouter>
       </AlertProvider>
-    </BrowserRouter>
+    </ErrorBoundary>
   </React.StrictMode>,
   document.getElementById('root')
 )
