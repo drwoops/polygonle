@@ -1,5 +1,10 @@
-const gameStateKey = 'gameState'
-const highContrastKey = 'highContrast'
+import {
+  GAME_MODE_DAILY,
+  GAME_MODE_UNLIMITED,
+} from '../constants/strings'
+const GAME_STATE_KEY = 'gameState'
+const HIGH_CONTRAST_KEY = 'highContrast'
+const GAME_MODE_KEY = 'dailyGameMode'
 
 export type StoredGameState = {
   guesses: string[]
@@ -7,11 +12,11 @@ export type StoredGameState = {
 }
 
 export const saveGameStateToLocalStorage = (gameState: StoredGameState) => {
-  localStorage.setItem(gameStateKey, JSON.stringify(gameState))
+  localStorage.setItem(GAME_STATE_KEY, JSON.stringify(gameState))
 }
 
 export const loadGameStateFromLocalStorage = () => {
-  const state = localStorage.getItem(gameStateKey)
+  const state = localStorage.getItem(GAME_STATE_KEY)
   return state ? (JSON.parse(state) as StoredGameState) : null
 }
 
@@ -37,13 +42,26 @@ export const loadStatsFromLocalStorage = () => {
 
 export const setStoredIsHighContrastMode = (isHighContrast: boolean) => {
   if (isHighContrast) {
-    localStorage.setItem(highContrastKey, '1')
+    localStorage.setItem(HIGH_CONTRAST_KEY, '1')
   } else {
-    localStorage.removeItem(highContrastKey)
+    localStorage.removeItem(HIGH_CONTRAST_KEY)
   }
 }
 
 export const getStoredIsHighContrastMode = () => {
-  const highContrast = localStorage.getItem(highContrastKey)
+  const highContrast = localStorage.getItem(HIGH_CONTRAST_KEY)
   return highContrast === '1'
+}
+
+export const getStoredGameMode = (puzzleId?: string) => {
+  const storedGameMode = localStorage.getItem(GAME_MODE_KEY)
+  const gameMode = puzzleId ? GAME_MODE_UNLIMITED : (storedGameMode || GAME_MODE_DAILY)
+  if (gameMode !== storedGameMode) {
+    setStoredGameMode(gameMode)
+  }
+  return gameMode
+}
+
+export const setStoredGameMode = (gameMode: string) => {
+  localStorage.setItem(GAME_MODE_KEY, gameMode)
 }

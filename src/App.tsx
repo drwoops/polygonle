@@ -33,6 +33,7 @@ import {
   getPuzzle,
   getPattern,
   getDailySolution,
+  getSolution,
   findFirstUnusedReveal,
   unicodeLength,
   getToday,
@@ -43,8 +44,11 @@ import {
   saveGameStateToLocalStorage,
   setStoredIsHighContrastMode,
   getStoredIsHighContrastMode,
+  getStoredGameMode,
+  setStoredGameMode,
 } from './lib/localStorage'
 import { default as GraphemeSplitter } from 'grapheme-splitter'
+import { useParams } from 'react-router-dom'
 
 import './App.css'
 import { AlertContainer } from './components/alerts/AlertContainer'
@@ -53,6 +57,7 @@ import { Navbar } from './components/navbar/Navbar'
 import { isInAppBrowser } from './lib/browser'
 import { MigrateStatsModal } from './components/modals/MigrateStatsModal'
 
+// TODO: move keys to localStorage
 const HARD_MODE_KEY = 'gameMode' // don't modify even though this is confusing
 const HARD_MODE_HARD = 'hard'
 const HARD_MODE_NORMAL = 'normal'
@@ -60,8 +65,6 @@ const HARD_MODE_NORMAL = 'normal'
 const EXPERT_MODE_KEY = 'expertMode'
 const EXPERT_MODE_EXPERT = 'expert'
 const EXPERT_MODE_NORMAL = 'normal'
-
-const GAME_MODE_KEY = 'dailyGameMode'
 
 const THEME_KEY = 'theme'
 const THEME_DARK = 'dark'
@@ -74,6 +77,7 @@ function App() {
 
   const { showError: showErrorAlert, showSuccess: showSuccessAlert } =
     useAlert()
+  const { puzzleId } = useParams<{ puzzleId: string }>()
   const [currentGuess, setCurrentGuess] = useState('')
   const [isGameWon, setIsGameWon] = useState(false)
   const [isInfoModalOpen, setIsInfoModalOpen] = useState(false)
@@ -83,9 +87,7 @@ function App() {
   const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false)
   const [currentRowClass, setCurrentRowClass] = useState('')
   const [isGameLost, setIsGameLost] = useState(false)
-  const [gameMode, setGameMode] = useState(
-    localStorage.getItem(GAME_MODE_KEY) || GAME_MODE_DAILY
-  )
+  const [gameMode, setGameMode] = useState(getStoredGameMode(puzzleId))
   const [isDarkMode, setIsDarkMode] = useState(
     localStorage.getItem(THEME_KEY)
       ? localStorage.getItem(THEME_KEY) === THEME_DARK
@@ -102,7 +104,7 @@ function App() {
   const solution = (() => {
     switch (gameMode) {
       case GAME_MODE_UNLIMITED:
-        return getDailySolution(getToday())
+        return getSolution(parseInt(puzzleId!))
       case GAME_MODE_DAILY:
       default:
         return getDailySolution(getToday())
@@ -182,7 +184,7 @@ function App() {
 
   const handleGameMode = (gameMode: string) => {
     setGameMode(gameMode)
-    localStorage.setItem(GAME_MODE_KEY, gameMode)
+    setStoredGameMode(gameMode)
   }
 
   const detectHexpertMode = (isHard: boolean, isExpert: boolean) => {
