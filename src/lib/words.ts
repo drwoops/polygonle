@@ -20,7 +20,6 @@ export class Solution {
   constructor(readonly word: string, readonly puzzle: Shape[], readonly index: number){}
 }
 
-
 // 1 January 2022 Game Epoch
 export const firstGameDate = new Date(2022, 6, 31)
 export const periodInDays = 1
@@ -193,20 +192,20 @@ const fillCache = () => {
 		wordCache.set(hashWord(w), w)
 		wordToIndex.set(w, i)
 	})
+  console.log(wordCache.keys())
 }
 fillCache();
 
 let unlimitedWords: string[] = []
-export const getNextUnlimitedHash = (index: number, seed: string) => {
+export const getUnlimitedHash = (index: number, seed: string) => {
   if(!unlimitedWords.length) {
     unlimitedWords = shuffleSeed.shuffle(WORDS, seed)
   }
   if (getWordOfDay(getIndex(getToday())) === unlimitedWords[index]) {
     index += 1
   }
-  return hashWord(unlimitedWords[index])
+  return {hash: hashWord(unlimitedWords[index]), index}
 }
-
 
 export const getSolutionFromHash = (hash: string) => {
   const word = wordCache.get(hash)

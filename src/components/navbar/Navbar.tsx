@@ -2,14 +2,16 @@ import {
   ChartBarIcon,
   CogIcon,
   InformationCircleIcon,
+  RefreshIcon,
 } from '@heroicons/react/outline'
-import { GAME_TITLE, GAME_MODE_DAILY } from '../../constants/strings'
+import { GAME_TITLE, GAME_MODE_DAILY, GAME_MODE_UNLIMITED} from '../../constants/strings'
 
 type Props = {
   setIsInfoModalOpen: (value: boolean) => void
   setIsStatsModalOpen: (value: boolean) => void
   setIsSettingsModalOpen: (value: boolean) => void
   setIsSupportModalOpen: (value: boolean) => void
+  onRefresh: () => void
   gameMode: string
   solutionIndex: number
 }
@@ -19,6 +21,7 @@ export const Navbar = ({
   setIsStatsModalOpen,
   setIsSettingsModalOpen,
   setIsSupportModalOpen,
+  onRefresh,
   gameMode,
   solutionIndex,
 }: Props) => {
@@ -33,6 +36,15 @@ export const Navbar = ({
             tabIndex={0}
             onClick={() => setIsInfoModalOpen(true)}
           />
+          {gameMode === GAME_MODE_UNLIMITED && (
+            <RefreshIcon
+              className="h-6 w-6 mr-2 scale-up cursor-pointer dark:stroke-white"
+              aria-label="info"
+              role="button"
+              tabIndex={0}
+              onClick={onRefresh}
+            />
+          )}
           <button className="h-6 w-6 scale-up cursor-pointer dark:stroke-white"
             aria-label="support me"
             onClick={() => setIsSupportModalOpen(true)}>

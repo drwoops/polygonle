@@ -3,6 +3,7 @@ import {
   GAME_MODE_UNLIMITED,
 } from '../constants/strings'
 const GAME_STATE_KEY = 'gameState'
+const UNLIMITED_STATE_KEY = 'unlimitedState'
 const HIGH_CONTRAST_KEY = 'highContrast'
 const GAME_MODE_KEY = 'dailyGameMode'
 
@@ -20,7 +21,21 @@ export const loadGameStateFromLocalStorage = () => {
   return state ? (JSON.parse(state) as StoredGameState) : null
 }
 
-const gameStatKey = 'gameStats'
+export type UnlimitedState = {
+  index: number
+  seed: string
+}
+
+export const saveUnlimitedStateToLocalStorage = (unlimitedState: UnlimitedState) => {
+  localStorage.setItem(UNLIMITED_STATE_KEY, JSON.stringify(unlimitedState))
+}
+
+export const loadUnlimitedStateFromLocalStorage = () => {
+  const state = localStorage.getItem(UNLIMITED_STATE_KEY)
+  return state ? (JSON.parse(state) as UnlimitedState) : null
+}
+
+const GAME_STAT_KEY = 'gameStats'
 
 export type GameStats = {
   winDistribution: number[]
@@ -32,11 +47,11 @@ export type GameStats = {
 }
 
 export const saveStatsToLocalStorage = (gameStats: GameStats) => {
-  localStorage.setItem(gameStatKey, JSON.stringify(gameStats))
+  localStorage.setItem(GAME_STAT_KEY, JSON.stringify(gameStats))
 }
 
 export const loadStatsFromLocalStorage = () => {
-  const stats = localStorage.getItem(gameStatKey)
+  const stats = localStorage.getItem(GAME_STAT_KEY)
   return stats ? (JSON.parse(stats) as GameStats) : null
 }
 

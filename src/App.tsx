@@ -31,7 +31,7 @@ import {
 import {
   findFirstUnusedReveal,
   getDailySolution,
-  getNextUnlimitedHash,
+  getUnlimitedHash,
   getPattern,
   getPuzzle,
   getSolutionFromHash,
@@ -43,13 +43,15 @@ import { addStatsForCompletedGame, loadStats } from './lib/stats'
 import {
   loadGameStateFromLocalStorage,
   saveGameStateToLocalStorage,
+  loadUnlimitedStateFromLocalStorage,
+  saveUnlimitedStateToLocalStorage,
   setStoredIsHighContrastMode,
   getStoredIsHighContrastMode,
   getStoredGameMode,
   setStoredGameMode,
 } from './lib/localStorage'
 import { default as GraphemeSplitter } from 'grapheme-splitter'
-import { useParams } from 'react-router-dom'
+import { useParams, useNavigate } from 'react-router-dom'
 
 import './App.css'
 import { AlertContainer } from './components/alerts/AlertContainer'
@@ -79,6 +81,7 @@ function App() {
   const { showError: showErrorAlert, showSuccess: showSuccessAlert } =
     useAlert()
   let { puzzleId } = useParams<{ puzzleId: string }>()
+  const navigate = useNavigate()
   const [currentGuess, setCurrentGuess] = useState('')
   const [isGameWon, setIsGameWon] = useState(false)
   const [isInfoModalOpen, setIsInfoModalOpen] = useState(false)
@@ -100,13 +103,28 @@ function App() {
     getStoredIsHighContrastMode()
   )
   const [isRevealing, setIsRevealing] = useState(false)
+  const [unlimitedState, setUnlimitedState] = useState(() => {
+    let state = loadUnlimitedStateFromLocalStorage()
+    if (state && state.seed) {
+      return state
+    }
+    return {
+      index: state?.index ? state.index : 0,
+      seed: Math.random().toString(),
+    }
+  })
 
   // get current solution (based on unlimited mode vs. daily
   const fetchedSolution = (() => {
     switch (gameMode) {
       case GAME_MODE_UNLIMITED:
         if (!puzzleId) {
-          puzzleId = getNextUnlimitedHash(0, 'blah')
+          const { hash, index } = getUnlimitedHash(
+            unlimitedState.index,
+            unlimitedState.seed
+          )
+          puzzleId = hash
+          unlimitedState.index = index
           window.history.pushState({}, '', `/${puzzleId}`)
         }
         return getSolutionFromHash(puzzleId!)
@@ -126,7 +144,6 @@ function App() {
   const [guesses, setGuesses] = useState<string[]>(() => {
     const loaded = loadGameStateFromLocalStorage()
     if (loaded?.solution !== solution.word) {
-      // TODO wipe storage?
       return []
     }
     const gameWasWon = loaded.guesses.includes(solution.word)
@@ -197,6 +214,9 @@ function App() {
   const handleGameMode = (gameMode: string) => {
     setGameMode(gameMode)
     setStoredGameMode(gameMode)
+    if (gameMode === GAME_MODE_DAILY) {
+      navigate('/')
+    }
   }
 
   const detectHexpertMode = (isHard: boolean, isExpert: boolean) => {
@@ -251,6 +271,10 @@ function App() {
   }, [guesses, solution.word])
 
   useEffect(() => {
+    saveUnlimitedStateToLocalStorage(unlimitedState)
+  }, [unlimitedState])
+
+  useEffect(() => {
     if (isGameWon) {
       const winMessage =
         WIN_MESSAGES[Math.floor(Math.random() * WIN_MESSAGES.length)]
@@ -283,6 +307,17 @@ function App() {
     setCurrentGuess(
       new GraphemeSplitter().splitGraphemes(currentGuess).slice(0, -1).join('')
     )
+  }
+
+  const onRefresh = () => {
+    const { hash, index } = getUnlimitedHash(
+      unlimitedState.index + 1,
+      unlimitedState.seed
+    )
+    unlimitedState.index = index
+    setUnlimitedState(unlimitedState)
+    saveUnlimitedStateToLocalStorage(unlimitedState)
+    navigate(`/${hash}`)
   }
 
   const onEnter = () => {
@@ -371,6 +406,7 @@ function App() {
         setIsStatsModalOpen={setIsStatsModalOpen}
         setIsSettingsModalOpen={setIsSettingsModalOpen}
         setIsSupportModalOpen={setIsSupportModalOpen}
+        onRefresh={onRefresh}
         gameMode={gameMode}
         solutionIndex={solution.index}
       />
