@@ -130,7 +130,7 @@ export const getPuzzle = (solution: string) => {
   let colors = ["#CF2B52", "#FD8C44", "#FEC04F", "#2DA4A8", "#296094", "#3F1F56"]
   colors = shuffleSeed.shuffle(colors, solution); // seed with solution for stability
 
-  let shapes = ['⬣', '▪', '◆', '◢', '◣', '◤', '◥']
+  let shapes = ['⬣', '◼', '◆', '◢', '◣', '◤', '◥']
   shapes = shuffleSeed.shuffle(shapes, solution); // seed with solution for stability
   const chars = Array.from(new Set(solution))
   const char2Shape = new Map()
