@@ -1,17 +1,15 @@
-import {Shape} from '../../lib/words'
+import {Shape as ShapeData} from '../../lib/words'
+import {Shape} from './Shape'
 
 type Props = {
-  puzzle: Shape[]
+  puzzle: ShapeData[]
 }
 
 export const Puzzle = ({puzzle}: Props) => {
   return (
     <div className="flex justify-center mb-1" role="list" aria-label="puzzle">
-      {puzzle.map((p: Shape, i: number) => {
-        return (<div key={i} style={{color: p.color!.hex}} aria-label={`${p.color!.label} ${p.label}`} tabIndex={0} role="listitem"
-                     className="w-14 h-14 flex items-center justify-center mx-0.5 text-5xl font-bold font-mono rounded dark:brightness-150">
-        {p.shape} 
-      </div>)
+      {puzzle.map((s: ShapeData, i: number) => {
+        return <Shape key={i} shape={s} useMargin={true} />
       })}
     </div>
   )
