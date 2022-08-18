@@ -49,11 +49,13 @@ export const SettingsModal = ({
       </div>
       <div className="flex justify-between mt-4 py-2 items-center text-sm">
         <p className="text-gray-500 dark:text-gray-300 text-left">Feedback</p>
-        <a href="mailto:grant.warman+polygonle@gmail.com" target="_blank" rel="noreferrer" className="text-indigo-700">Email</a>
+        <a href="mailto:grant.warman+polygonle@gmail.com" target="_blank" rel="noreferrer"
+           className="text-indigo-700 dark:text-indigo-400 font-bold">Email</a>
       </div>
       <div className="flex justify-between items-center text-sm">
         <p className="text-gray-500 dark:text-gray-300 text-left">Report Bugs</p>
-        <a href="https://github.com/Grantismo/polygonle/issues" target="_blank" rel="noreferrer" className="text-indigo-700">Github</a>
+        <a href="https://github.com/Grantismo/polygonle/issues" target="_blank" rel="noreferrer"
+           className="text-indigo-700 dark:text-indigo-400 font-bold">Github</a>
       </div>
     </BaseModal>
   )
