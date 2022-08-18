@@ -10,7 +10,7 @@ export const Shape = ({shape, useMargin}: Props) => {
       aria-label={`${shape.color!.label} ${shape.label}`}
       tabIndex={0}
       role="listitem"
-      className={`w-14 h-14 flex items-center justify-center ${useMargin? 'mx-0.5': ''} text-5xl font-bold font-mono rounded dark:brightness-150`}>
+      className={`w-14 h-14 flex items-center justify-center ${useMargin? 'mx-0.5': ''} text-5xl text-center font-bold font-mono rounded dark:brightness-150`}>
       {shape.shape} 
     </div>
   )
