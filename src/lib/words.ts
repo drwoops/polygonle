@@ -131,7 +131,7 @@ export const getWordOfDay = (index: number) => {
   return localeAwareUpperCase(WORDS[index % WORDS.length])
 }
 
-export const getPuzzle = (solution: string) => {
+export const getPuzzle = (solution: string, seed=solution) => {
   let colors = [
     new Color("#CF2B52", "red"),
     new Color("#FD8C44", "orange"),
@@ -140,7 +140,7 @@ export const getPuzzle = (solution: string) => {
     new Color("#296094", "blue"), 
     new Color("#3F1F56", "magenta")
   ]
-  colors = shuffleSeed.shuffle(colors, solution); // seed with solution for stability
+  colors = shuffleSeed.shuffle(colors, seed); // seed with solution for stability
 
   let shapes = [
     new Shape('⬢', 'octagon'),
@@ -151,7 +151,7 @@ export const getPuzzle = (solution: string) => {
     new Shape('◤', 'upper-left triangle'),
     new Shape('◥', 'upper-right triangle')
   ]
-  shapes = shuffleSeed.shuffle(shapes, solution); // seed with solution for stability
+  shapes = shuffleSeed.shuffle(shapes, seed); // seed with solution for stability
   const chars = Array.from(new Set(solution))
   const char2Shape = new Map()
   for(let i = 0; i < chars.length; i++) {
@@ -161,6 +161,10 @@ export const getPuzzle = (solution: string) => {
   }
 
   return Array.from(solution).map((c: String) => char2Shape.get(c))
+}
+
+export const getPattern = (puzzle: Shape[]) => {
+  return puzzle.map((p) => p.shape).join('')
 }
 
 export const getPuzzleOfDay = (index: number) => {

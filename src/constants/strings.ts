@@ -4,10 +4,15 @@ export const WIN_MESSAGES = ['Great Job!', 'Awesome', 'Well done!']
 export const GAME_COPIED_MESSAGE = 'Game copied to clipboard'
 export const NOT_ENOUGH_LETTERS_MESSAGE = 'Not enough letters'
 export const WORD_NOT_FOUND_MESSAGE = 'Word not found'
+export const PATTERN_MUST_MATCH_MESSAGE = 'Must match the pattern'
 export const HARD_MODE_ALERT_MESSAGE =
   'Hard Mode can only be enabled at the start!'
+export const EXPERT_MODE_ALERT_MESSAGE =
+  'Expert Mode can only be enabled at the start!'
 export const HARD_MODE_DESCRIPTION =
   'Any revealed hints must be used in subsequent guesses'
+export const EXPERT_MODE_DESCRIPTION =
+  'All guesses must match the pattern of the shapes (WARNING: this may be impossibly difficult for some puzzles)'
 export const HIGH_CONTRAST_MODE_DESCRIPTION = 'For improved color vision'
 export const CORRECT_WORD_MESSAGE = (solution: string) =>
   `The word was ${solution}`
