@@ -3,6 +3,7 @@ import { SettingsToggle } from './SettingsToggle'
 import {
   HARD_MODE_DESCRIPTION,
   HIGH_CONTRAST_MODE_DESCRIPTION,
+  EXPERT_MODE_DESCRIPTION,
 } from '../../constants/strings'
 
 type Props = {
@@ -14,6 +15,8 @@ type Props = {
   handleDarkMode: Function
   isHighContrastMode: boolean
   handleHighContrastMode: Function
+  isExpertMode: boolean
+  handleExpertMode: Function
 }
 
 export const SettingsModal = ({
@@ -25,6 +28,8 @@ export const SettingsModal = ({
   handleDarkMode,
   isHighContrastMode,
   handleHighContrastMode,
+  isExpertMode,
+  handleExpertMode,
 }: Props) => {
   return (
     <BaseModal title="Settings" isOpen={isOpen} handleClose={handleClose}>
@@ -34,6 +39,12 @@ export const SettingsModal = ({
           flag={isHardMode}
           handleFlag={handleHardMode}
           description={HARD_MODE_DESCRIPTION}
+        />
+        <SettingsToggle
+          settingName="Expert Mode"
+          flag={isExpertMode}
+          handleFlag={handleExpertMode}
+          description={EXPERT_MODE_DESCRIPTION}
         />
         <SettingsToggle
           settingName="Dark Mode"

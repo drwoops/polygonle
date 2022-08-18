@@ -13,6 +13,7 @@ import {
   WORD_NOT_FOUND_MESSAGE,
   CORRECT_WORD_MESSAGE,
   HARD_MODE_ALERT_MESSAGE,
+  EXPERT_MODE_ALERT_MESSAGE,
   DISCOURAGE_INAPP_BROWSER_TEXT,
   SHARE_FAILURE_TEXT,
 } from './constants/strings'
@@ -47,6 +48,18 @@ import { Navbar } from './components/navbar/Navbar'
 import { isInAppBrowser } from './lib/browser'
 import { MigrateStatsModal } from './components/modals/MigrateStatsModal'
 
+const GAME_MODE_KEY = 'gameMode'
+const GAME_MODE_HARD = 'hard'
+const GAME_MODE_NORMAL = 'normal'
+
+const EXPERT_MODE_KEY = 'expertMode'
+const EXPERT_MODE_EXPERT = 'expert'
+const EXPERT_MODE_NORMAL = 'normal'
+
+const THEME_KEY = 'theme'
+const THEME_DARK = 'dark'
+const THEME_LIGHT = 'light'
+
 function App() {
   const prefersDarkMode = window.matchMedia(
     '(prefers-color-scheme: dark)'
@@ -64,8 +77,8 @@ function App() {
   const [currentRowClass, setCurrentRowClass] = useState('')
   const [isGameLost, setIsGameLost] = useState(false)
   const [isDarkMode, setIsDarkMode] = useState(
-    localStorage.getItem('theme')
-      ? localStorage.getItem('theme') === 'dark'
+    localStorage.getItem(THEME_KEY)
+      ? localStorage.getItem(THEME_KEY) === THEME_DARK
       : prefersDarkMode
       ? true
       : false
@@ -95,8 +108,14 @@ function App() {
   const [stats, setStats] = useState(() => loadStats())
 
   const [isHardMode, setIsHardMode] = useState(
-    localStorage.getItem('gameMode')
-      ? localStorage.getItem('gameMode') === 'hard'
+    localStorage.getItem(GAME_MODE_KEY)
+      ? localStorage.getItem(GAME_MODE_KEY) === GAME_MODE_HARD
+      : false
+  )
+
+  const [isExpertMode, setIsExpertMode] = useState(
+    localStorage.getItem(EXPERT_MODE_KEY)
+      ? localStorage.getItem(EXPERT_MODE_KEY) === EXPERT_MODE_EXPERT
       : false
   )
 
@@ -135,15 +154,36 @@ function App() {
 
   const handleDarkMode = (isDark: boolean) => {
     setIsDarkMode(isDark)
-    localStorage.setItem('theme', isDark ? 'dark' : 'light')
+    localStorage.setItem(THEME_KEY, isDark ? THEME_DARK : THEME_LIGHT)
   }
 
   const handleHardMode = (isHard: boolean) => {
-    if (guesses.length === 0 || localStorage.getItem('gameMode') === 'hard') {
+    if (
+      guesses.length === 0 ||
+      localStorage.getItem(GAME_MODE_KEY) === GAME_MODE_HARD
+    ) {
       setIsHardMode(isHard)
-      localStorage.setItem('gameMode', isHard ? 'hard' : 'normal')
+      localStorage.setItem(
+        GAME_MODE_KEY,
+        isHard ? GAME_MODE_HARD : GAME_MODE_NORMAL
+      )
     } else {
       showErrorAlert(HARD_MODE_ALERT_MESSAGE)
+    }
+  }
+
+  const handleExpertMode = (isExpert: boolean) => {
+    if (
+      guesses.length === 0 ||
+      localStorage.getItem(EXPERT_MODE_KEY) === EXPERT_MODE_EXPERT
+    ) {
+      setIsExpertMode(isExpert)
+      localStorage.setItem(
+        EXPERT_MODE_KEY,
+        isExpert ? EXPERT_MODE_EXPERT : EXPERT_MODE_NORMAL
+      )
+    } else {
+      showErrorAlert(EXPERT_MODE_ALERT_MESSAGE)
     }
   }
 
@@ -329,6 +369,8 @@ function App() {
           handleDarkMode={handleDarkMode}
           isHighContrastMode={isHighContrastMode}
           handleHighContrastMode={handleHighContrastMode}
+          isExpertMode={isExpertMode}
+          handleExpertMode={handleExpertMode}
         />
         <AlertContainer />
       </div>
