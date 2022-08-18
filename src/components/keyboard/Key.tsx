@@ -24,6 +24,10 @@ export const Key = ({
 }: Props) => {
   const keyDelayMs = REVEAL_TIME_MS * solution.length
   const isHighContrast = getStoredIsHighContrastMode()
+  let ariaLabel = value;
+  if(value.length === 1) {
+    ariaLabel = `letter "${value}"${status ? ' ' + status : ''}`;
+  }
 
   const classes = classnames(
     'flex items-center justify-center rounded mx-0.5 text-xs font-bold cursor-pointer select-none dark:text-white',
@@ -57,10 +61,10 @@ export const Key = ({
   return (
     <button
       style={styles}
-      aria-label={`${value}${status ? ' ' + status : ''}`}
+      aria-label={ariaLabel}
+      role="listitem"
       className={classes}
-      onClick={handleClick}
-    >
+      onClick={handleClick}>
       {children || value}
     </button>
   )

@@ -6,9 +6,9 @@ type Props = {
 
 export const Puzzle = ({puzzle}: Props) => {
   return (
-    <div className="flex justify-center mb-1">
+    <div className="flex justify-center mb-1" role="list" aria-label="puzzle">
       {puzzle.map((p: Shape, i: number) => {
-        return (<div key={i} style={{color: p.color}}
+        return (<div key={i} style={{color: p.color!.hex}} aria-label={`${p.color!.label} ${p.label}`} tabIndex={0} role="listitem"
                      className="w-14 h-14 flex items-center justify-center mx-0.5 text-5xl font-bold font-mono rounded dark:brightness-150">
         {p.shape} 
       </div>)

@@ -12,7 +12,7 @@ export const CurrentRow = ({ guess, className }: Props) => {
   const classes = `flex justify-center mb-1 ${className}`
 
   return (
-    <div className={classes}>
+    <div className={classes} role="list" aria-label="current row">
       {splitGuess.map((letter, i) => (
         <Cell key={i} value={letter} />
       ))}

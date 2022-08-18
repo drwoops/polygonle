@@ -5,9 +5,14 @@ import { getGuessStatuses } from './statuses'
 import { default as GraphemeSplitter } from 'grapheme-splitter'
 import * as shuffleSeed from 'shuffle-seed';
 
+export class Color {
+  constructor(readonly hex: string, readonly label: string){}
+}
 
 export class Shape {
-  constructor(readonly shape: string, readonly color: string){}
+  color?: Color;
+
+  constructor(readonly shape: string, readonly label: string){}
 }
 
 // 1 January 2022 Game Epoch
@@ -127,15 +132,32 @@ export const getWordOfDay = (index: number) => {
 }
 
 export const getPuzzle = (solution: string) => {
-  let colors = ["#CF2B52", "#FD8C44", "#FEC04F", "#2DA4A8", "#296094", "#3F1F56"]
+  let colors = [
+    new Color("#CF2B52", "red"),
+    new Color("#FD8C44", "orange"),
+    new Color("#FEC04F", "yellow"),
+    new Color("#2DA4A8", "cyan"),
+    new Color("#296094", "blue"), 
+    new Color("#3F1F56", "magenta")
+  ]
   colors = shuffleSeed.shuffle(colors, solution); // seed with solution for stability
 
-  let shapes = ['⬣', '◼', '◆', '◢', '◣', '◤', '◥']
+  let shapes = [
+    new Shape('⬢', 'octagon'),
+    new Shape('◼', 'square'),
+    new Shape('◆', 'diamond'),
+    new Shape('◢', 'bottom-right triangle'),
+    new Shape('◣', 'bottom-left triangle'),
+    new Shape('◤', 'upper-left triangle'),
+    new Shape('◥', 'upper-right triangle')
+  ]
   shapes = shuffleSeed.shuffle(shapes, solution); // seed with solution for stability
   const chars = Array.from(new Set(solution))
   const char2Shape = new Map()
   for(let i = 0; i < chars.length; i++) {
-    char2Shape.set(chars[i], new Shape(shapes[i], colors[i]))
+    const shape = shapes[i];
+    shape.color = colors[i];
+    char2Shape.set(chars[i], shape)
   }
 
   return Array.from(solution).map((c: String) => char2Shape.get(c))

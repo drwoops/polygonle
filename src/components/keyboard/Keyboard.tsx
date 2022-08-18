@@ -1,6 +1,6 @@
 import { getStatuses } from '../../lib/statuses'
 import { Key } from './Key'
-import { useEffect } from 'react'
+import { useEffect, useRef } from 'react'
 import { ENTER_TEXT, DELETE_TEXT } from '../../constants/strings'
 import { localeAwareUpperCase } from '../../lib/words'
 
@@ -22,6 +22,12 @@ export const Keyboard = ({
   isRevealing,
 }: Props) => {
   const charStatuses = getStatuses(solution, guesses)
+  const keyboardRef = useRef<HTMLDivElement>(null);
+
+  const focusKeyboard = () => {
+    if(!keyboardRef.current) return;
+    keyboardRef.current.focus();
+  };
 
   const onClick = (value: string) => {
     if (value === 'ENTER') {
@@ -31,20 +37,25 @@ export const Keyboard = ({
     } else {
       onChar(value)
     }
+    focusKeyboard();
   }
 
   useEffect(() => {
     const listener = (e: KeyboardEvent) => {
-      if (e.code === 'Enter') {
+      const isEnter = e.code === 'Enter';
+      const isBackspace = e.code === 'Backspace';
+      const key = localeAwareUpperCase(e.key);
+      const isKeypress = key.length === 1 && key >= 'A' && key <= 'Z';
+      if (isEnter) {
         onEnter()
-      } else if (e.code === 'Backspace') {
+      } else if (isBackspace) {
         onDelete()
-      } else {
-        const key = localeAwareUpperCase(e.key)
-        // TODO: check this test if the range works with non-english letters
-        if (key.length === 1 && key >= 'A' && key <= 'Z') {
-          onChar(key)
-        }
+      } else if (isKeypress){
+        onChar(key)
+      }
+
+      if(isEnter || isBackspace || isKeypress) {
+        focusKeyboard();
       }
     }
     window.addEventListener('keyup', listener)
@@ -54,7 +65,7 @@ export const Keyboard = ({
   }, [onEnter, onDelete, onChar])
 
   return (
-    <div>
+    <div ref={keyboardRef} aria-label="keyboard" role="list" tabIndex={0}>
       <div className="flex justify-center mb-1">
         {['Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P'].map((key) => (
           <Key

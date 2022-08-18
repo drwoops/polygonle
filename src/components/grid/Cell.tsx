@@ -22,6 +22,7 @@ export const Cell = ({
   const shouldReveal = isRevealing && isCompleted
   const animationDelay = `${position * REVEAL_TIME_MS}ms`
   const isHighContrast = getStoredIsHighContrastMode()
+  const ariaLabel = !status ? 'empty cell' : `letter "${value}" is ${status}`;
 
   const classes = classnames(
     'w-14 h-14 border-solid border-2 flex items-center justify-center mx-0.5 text-3xl font-bold rounded dark:text-white',
@@ -45,7 +46,7 @@ export const Cell = ({
   )
 
   return (
-    <div className={classes} style={{ animationDelay }}>
+    <div className={classes} style={{ animationDelay }} tabIndex={0} role="listitem" aria-label={ariaLabel}>
       <div className="letter-container" style={{ animationDelay }}>
         {value}
       </div>

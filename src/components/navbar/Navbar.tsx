@@ -24,6 +24,9 @@ export const Navbar = ({
         <div className="icon-group">
           <InformationCircleIcon
             className="h-6 w-6 mr-2 cursor-pointer dark:stroke-white"
+            aria-label="info"
+            role="button"
+            tabIndex={0}
             onClick={() => setIsInfoModalOpen(true)}
           />
           <button className="h-6 w-6 mr-3 cursor-pointer dark:stroke-white"
@@ -36,10 +39,16 @@ export const Navbar = ({
         <div className="icon-group">
           <ChartBarIcon
             className="h-6 w-6 mr-3 cursor-pointer dark:stroke-white"
+            aria-label="stats"
+            role="button"
+            tabIndex={0}
             onClick={() => setIsStatsModalOpen(true)}
           />
           <CogIcon
             className="h-6 w-6 cursor-pointer dark:stroke-white"
+            aria-label="settings"
+            role="button"
+            tabIndex={0}
             onClick={() => setIsSettingsModalOpen(true)}
           />
         </div>

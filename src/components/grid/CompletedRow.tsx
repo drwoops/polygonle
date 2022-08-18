@@ -13,7 +13,7 @@ export const CompletedRow = ({ solution, guess, isRevealing }: Props) => {
   const splitGuess = unicodeSplit(guess)
 
   return (
-    <div className="flex justify-center mb-1">
+    <div className="flex justify-center mb-1" role="list" aria-label="guessed row">
       {splitGuess.map((letter, i) => (
         <Cell
           key={i}

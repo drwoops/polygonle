@@ -36,7 +36,7 @@ export const Alert = ({
     >
       <div className={classes}>
         <div className="p-2">
-          <p className="text-sm text-center font-medium">{message}</p>
+          <p className="text-sm text-center font-medium" role="alert">{message}</p>
         </div>
       </div>
     </Transition>
