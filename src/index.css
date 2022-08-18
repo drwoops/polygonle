@@ -53,11 +53,11 @@
   animation-fill-mode: backwards;
 }
 
-.cursor-pointer {
+.scale-up {
   transition: all var(--animation-speed-fast);
 }
 
-.cursor-pointer:hover {
+.scale-up:hover {
   transform: scale(1.2);
 }
 

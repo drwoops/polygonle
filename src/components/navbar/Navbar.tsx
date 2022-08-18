@@ -23,13 +23,13 @@ export const Navbar = ({
       <div className="navbar-content px-5">
         <div className="icon-group">
           <InformationCircleIcon
-            className="h-6 w-6 mr-2 cursor-pointer dark:stroke-white"
+            className="h-6 w-6 mr-2 scale-up cursor-pointer dark:stroke-white"
             aria-label="info"
             role="button"
             tabIndex={0}
             onClick={() => setIsInfoModalOpen(true)}
           />
-          <button className="h-6 w-6 cursor-pointer dark:stroke-white"
+          <button className="h-6 w-6 scale-up cursor-pointer dark:stroke-white"
             aria-label="support me"
             onClick={() => setIsSupportModalOpen(true)}>
             ☕
@@ -38,14 +38,14 @@ export const Navbar = ({
         <p className="text-xl ml-2.5 font-bold title dark:text-white">{GAME_TITLE}</p>
         <div className="icon-group">
           <ChartBarIcon
-            className="h-6 w-6 mr-3 cursor-pointer dark:stroke-white"
+            className="h-6 w-6 mr-3 scale-up cursor-pointer dark:stroke-white"
             aria-label="stats"
             role="button"
             tabIndex={0}
             onClick={() => setIsStatsModalOpen(true)}
           />
           <CogIcon
-            className="h-6 w-6 cursor-pointer dark:stroke-white"
+            className="h-6 w-6 scale-up cursor-pointer dark:stroke-white"
             aria-label="settings"
             role="button"
             tabIndex={0}

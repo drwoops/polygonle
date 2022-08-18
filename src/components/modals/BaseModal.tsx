@@ -53,7 +53,7 @@ export const BaseModal = ({ title, children, isOpen, handleClose }: Props) => {
                 aria-pressed="false"
                 className="absolute right-4 top-4"
               >
-                <XCircleIcon className="h-6 w-6 cursor-pointer dark:stroke-white" />
+                <XCircleIcon className="h-6 w-6 scale-up cursor-pointer dark:stroke-white" />
               </button>
               <div>
                 <div className="text-center">
