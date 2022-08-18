@@ -11,6 +11,7 @@ import {
   GAME_COPIED_MESSAGE,
   NOT_ENOUGH_LETTERS_MESSAGE,
   WORD_NOT_FOUND_MESSAGE,
+  PATTERN_MUST_MATCH_MESSAGE,
   CORRECT_WORD_MESSAGE,
   HARD_MODE_ALERT_MESSAGE,
   EXPERT_MODE_ALERT_MESSAGE,
@@ -28,6 +29,8 @@ import {
   isWordInWordList,
   isWinningWord,
   solution,
+  getPuzzle,
+  getPattern,
   puzzle,
   findFirstUnusedReveal,
   unicodeLength,
@@ -263,6 +266,18 @@ function App() {
           onClose: clearCurrentRowClass,
         })
       }
+    }
+
+    // enforce expert mode - all guesses must follow the pattern of the solution
+    if (
+      isExpertMode &&
+      getPattern(
+        getPuzzle(currentGuess, /* seed to compare patterns */ solution)
+      ) !== getPattern(puzzle)
+    ) {
+      return showErrorAlert(PATTERN_MUST_MATCH_MESSAGE, {
+        onClose: clearCurrentRowClass,
+      })
     }
 
     setIsRevealing(true)
