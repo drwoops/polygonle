@@ -12,7 +12,7 @@ export const EXPERT_MODE_ALERT_MESSAGE =
 export const HARD_MODE_DESCRIPTION =
   'Any revealed hints must be used in subsequent guesses'
 export const EXPERT_MODE_DESCRIPTION =
-  'All guesses must match the pattern of the shapes (WARNING: this may be impossibly difficult for some puzzles)'
+  'All guesses must match the pattern of the shapes. WARNING: this may be incredibly difficult for some puzzles'
 export const HIGH_CONTRAST_MODE_DESCRIPTION = 'For improved color vision'
 export const CORRECT_WORD_MESSAGE = (solution: string) =>
   `The word was ${solution}`

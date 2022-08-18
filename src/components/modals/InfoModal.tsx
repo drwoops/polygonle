@@ -6,6 +6,7 @@ import { getPuzzle } from '../../lib/words'
 import { CogIcon} from '@heroicons/react/outline'
 import {
   HARD_MODE_DESCRIPTION,
+  EXPERT_MODE_DESCRIPTION
 } from '../../constants/strings'
 
 type Props = {
@@ -110,9 +111,17 @@ export const InfoModal = ({ isOpen, handleClose }: Props) => {
         You can enabled advanced modes in the settings menu 
         (<CogIcon className="inline-flex h-6 w-6 scale-up cursor-pointer dark:stroke-white" /> icon in the upper right)
       </p>
+      <p className="text-sm text-gray-500 dark:text-gray-300 font-bold mt-3 mb-1">
+        Hard Mode
+      </p>
       <p className="text-sm text-gray-500 dark:text-gray-300">
-        <strong>Hard Mode: </strong>
         {HARD_MODE_DESCRIPTION}
+      </p>
+      <p className="text-sm text-gray-500 dark:text-gray-300 font-bold mt-3 mb-1">
+        Expert Mode
+      </p>
+      <p className="text-sm text-gray-500 dark:text-gray-300">
+        {EXPERT_MODE_DESCRIPTION}
       </p>
       <div className="mt-6 italic text-sm text-gray-500 dark:text-gray-300">
       	Based on the open source {' '} <a
