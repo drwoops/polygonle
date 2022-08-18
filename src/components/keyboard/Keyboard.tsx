@@ -25,8 +25,9 @@ export const Keyboard = ({
   const keyboardRef = useRef<HTMLDivElement>(null);
 
   const focusKeyboard = () => {
-    if(!keyboardRef.current) return;
-    keyboardRef.current.focus();
+    //temp noop will revisit later
+    //if(!keyboardRef.current) return;
+    //keyboardRef.current.focus();
   };
 
   const onClick = (value: string) => {

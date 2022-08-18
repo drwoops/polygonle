@@ -29,7 +29,7 @@ export const Navbar = ({
             tabIndex={0}
             onClick={() => setIsInfoModalOpen(true)}
           />
-          <button className="h-6 w-6 mr-3 cursor-pointer dark:stroke-white"
+          <button className="h-6 w-6 cursor-pointer dark:stroke-white"
             aria-label="support me"
             onClick={() => setIsSupportModalOpen(true)}>
             ☕
