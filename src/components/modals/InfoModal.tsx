@@ -108,7 +108,7 @@ export const InfoModal = ({ isOpen, handleClose }: Props) => {
       </p>
       <h2 className="text-lg leading-6 font-medium text-gray-900 dark:text-gray-100 m-4"> Advanced modes </h2>
       <p className="text-sm text-gray-500 dark:text-gray-300">
-        You can enabled advanced modes in the settings menu 
+        You can enable advanced modes in the settings menu 
         (<CogIcon className="inline-flex h-6 w-6 scale-up cursor-pointer dark:stroke-white" /> icon in the upper right)
       </p>
       <p className="text-sm text-gray-500 dark:text-gray-300 font-bold mt-3 mb-1">
