@@ -160,6 +160,12 @@ function App() {
     localStorage.setItem(THEME_KEY, isDark ? THEME_DARK : THEME_LIGHT)
   }
 
+  const detectHexpertMode = (isHard: boolean, isExpert: boolean) => {
+    if (isHard && isExpert) {
+      showSuccessAlert('ARE YOU SERIOUSLY IN HEXPERT MODE???')
+    }
+  }
+
   const handleHardMode = (isHard: boolean) => {
     if (
       guesses.length === 0 ||
@@ -170,12 +176,14 @@ function App() {
         GAME_MODE_KEY,
         isHard ? GAME_MODE_HARD : GAME_MODE_NORMAL
       )
+      detectHexpertMode(isHard, isExpertMode)
     } else {
       showErrorAlert(HARD_MODE_ALERT_MESSAGE)
     }
   }
 
   const handleExpertMode = (isExpert: boolean) => {
+    debugger
     if (
       guesses.length === 0 ||
       localStorage.getItem(EXPERT_MODE_KEY) === EXPERT_MODE_EXPERT
@@ -185,6 +193,7 @@ function App() {
         EXPERT_MODE_KEY,
         isExpert ? EXPERT_MODE_EXPERT : EXPERT_MODE_NORMAL
       )
+      detectHexpertMode(isHardMode, isExpert)
     } else {
       showErrorAlert(EXPERT_MODE_ALERT_MESSAGE)
     }
