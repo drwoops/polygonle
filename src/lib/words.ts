@@ -143,7 +143,7 @@ export const getPuzzle = (solution: string, seed=solution) => {
   colors = shuffleSeed.shuffle(colors, seed); // seed with solution for stability
 
   let shapes = [
-    new Shape('⬢', 'octagon'),
+    new Shape('⬢', 'hexagon'),
     new Shape('◼', 'square'),
     new Shape('◆', 'diamond'),
     new Shape('◢', 'bottom-right triangle'),

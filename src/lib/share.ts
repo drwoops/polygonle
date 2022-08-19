@@ -20,20 +20,26 @@ export const shareStatus = (
   handleShareToClipboard: () => void,
   handleShareFailure: () => void
 ) => {
-  const hardModeSymbol = isHardMode ? '*' : '';
-  const expertModeSymbol = isExpertMode ? '◆' : '';
+  let modesSymbol = '';
+  if(isHardMode && isExpertMode) {
+    modesSymbol = '⬢'; // hexpert mode
+  } else if (isHardMode) {
+    modesSymbol = '■';
+  } else if (isExpertMode) {
+    modesSymbol = '◆';
+  }
 
   const textToShare =
     `${GAME_TITLE} ${solutionIndex} ${
       lost ? 'X' : guesses.length
-    }/${MAX_CHALLENGES}${hardModeSymbol}${expertModeSymbol}\n\n` +
+    }/${MAX_CHALLENGES}${modesSymbol}\n\n` +
     'www.polygonle.com\n'
     +
     `${puzzle.map((s: Shape) => s.shape).join('')}\n` + 
     generateEmojiGrid(
       solution,
       guesses,
-      getEmojiTiles(isDarkMode, isHighContrastMode)
+      getEmojiTiles(isDarkMode, isExpertMode, isHighContrastMode)
     )
 
   const shareData = { text: textToShare }
@@ -102,10 +108,10 @@ const attemptShare = (shareData: object) => {
   )
 }
 
-const getEmojiTiles = (isDarkMode: boolean, isHighContrastMode: boolean) => {
+const getEmojiTiles = (isDarkMode: boolean, isExpertMode: boolean, isHighContrastMode: boolean) => {
   let tiles: string[] = []
-  tiles.push(isHighContrastMode ? '🟧' : '🟩')
-  tiles.push(isHighContrastMode ? '🟦' : '🟨')
+  tiles.push(isExpertMode ? '🟪': (isHighContrastMode ? '🟧':'🟩'))
+  tiles.push(isHighContrastMode ? '🟦': '🟨')
   tiles.push(isDarkMode ? '⬛' : '⬜')
   return tiles
 }
