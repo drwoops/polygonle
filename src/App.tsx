@@ -13,6 +13,7 @@ import {
   WORD_NOT_FOUND_MESSAGE,
   PATTERN_MUST_MATCH_MESSAGE,
   CORRECT_WORD_MESSAGE,
+  HEXPERT_MODE_ALERT_MESSAGE,
   HARD_MODE_ALERT_MESSAGE,
   EXPERT_MODE_ALERT_MESSAGE,
   DISCOURAGE_INAPP_BROWSER_TEXT,
@@ -162,7 +163,7 @@ function App() {
 
   const detectHexpertMode = (isHard: boolean, isExpert: boolean) => {
     if (isHard && isExpert) {
-      showSuccessAlert('ARE YOU SERIOUSLY IN HEXPERT MODE???')
+      showSuccessAlert(HEXPERT_MODE_ALERT_MESSAGE)
     }
   }
 
