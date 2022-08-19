@@ -27,6 +27,8 @@ export const shareStatus = (
     `${GAME_TITLE} ${solutionIndex} ${
       lost ? 'X' : guesses.length
     }/${MAX_CHALLENGES}${hardModeSymbol}${expertModeSymbol}\n\n` +
+    'www.polygonle.com\n'
+    +
     `${puzzle.map((s: Shape) => s.shape).join('')}\n` + 
     generateEmojiGrid(
       solution,
