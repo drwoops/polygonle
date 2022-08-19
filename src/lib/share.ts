@@ -30,7 +30,7 @@ export const shareStatus = (
   }
 
   const textToShare =
-    `${GAME_TITLE} ${solutionIndex} ${
+    `#${GAME_TITLE} ${solutionIndex} ${
       lost ? 'X' : guesses.length
     }/${MAX_CHALLENGES}${modesSymbol}\n\n` +
     'www.polygonle.com\n'
