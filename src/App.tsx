@@ -469,6 +469,9 @@ function App() {
           isDarkMode={isDarkMode}
           isHighContrastMode={isHighContrastMode}
           numberOfGuessesMade={guesses.length}
+          onNextPuzzle={onRefresh}
+          onStartUnlimited={() => handleGameMode(GAME_MODE_UNLIMITED)}
+          gameMode={gameMode}
         />
         <MigrateStatsModal
           isOpen={isMigrateStatsModalOpen}

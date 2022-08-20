@@ -85,6 +85,10 @@
   font-family: 'Josefin Sans', sans-serif;
 }
 
+.inf {
+  line-height: 0.2;
+}
+
 @keyframes revealAbsentCharCell {
   0% {
     transform: rotateX(0deg);
