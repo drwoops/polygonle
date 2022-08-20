@@ -211,11 +211,15 @@ function App() {
     localStorage.setItem(THEME_KEY, isDark ? THEME_DARK : THEME_LIGHT)
   }
 
-  const handleGameMode = (gameMode: string) => {
+  const clearGameState = () => {
     setGuesses([])
     setCurrentGuess('')
     setIsGameWon(false)
     setIsGameLost(false)
+  }
+
+  const handleGameMode = (gameMode: string) => {
+    clearGameState()
     setGameMode(gameMode)
     setStoredGameMode(gameMode)
     if (gameMode === GAME_MODE_DAILY) {
@@ -298,7 +302,6 @@ function App() {
   }, [isGameWon, isGameLost, showSuccessAlert, solution.word.length])
 
   const onChar = (value: string) => {
-    debugger
     if (
       unicodeLength(`${currentGuess}${value}`) <= solution.word.length &&
       guesses.length < MAX_CHALLENGES &&
@@ -315,6 +318,7 @@ function App() {
   }
 
   const onRefresh = () => {
+    clearGameState()
     const { hash, index } = getUnlimitedHash(
       unlimitedState.index + 1,
       unlimitedState.seed
@@ -326,7 +330,6 @@ function App() {
   }
 
   const onEnter = () => {
-    debugger
     if (isGameWon || isGameLost) {
       return
     }

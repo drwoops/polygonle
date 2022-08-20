@@ -25,10 +25,16 @@ export const Navbar = ({
   gameMode,
   solutionIndex,
 }: Props) => {
+  const gameModeIndicator = () => {
+    if(gameMode === GAME_MODE_DAILY) {
+      return <span className="text-sm text-gray-500 dark:text-gray-300 title absolute leading-7 left-24">#{solutionIndex}</span>
+    }
+    return <span className="text-xl text-gray-500 dark:text-gray-300 absolute leading-7 left-24">∞</span>
+  } 
   return (
     <div className="navbar">
-      <div className="navbar-content px-5">
-        <div className="icon-group">
+      <div className="navbar-content px-3">
+        <div className="icon-group flex-1 justify-start">
           <InformationCircleIcon
             className="h-6 w-6 mr-2 scale-up cursor-pointer dark:stroke-white"
             aria-label="info"
@@ -36,6 +42,11 @@ export const Navbar = ({
             tabIndex={0}
             onClick={() => setIsInfoModalOpen(true)}
           />
+          <button className="h-6 w-6 mr-2 scale-up cursor-pointer dark:stroke-white"
+            aria-label="support me"
+            onClick={() => setIsSupportModalOpen(true)}>
+            ☕
+          </button>
           {gameMode === GAME_MODE_UNLIMITED && (
             <RefreshIcon
               className="h-6 w-6 mr-2 scale-up cursor-pointer dark:stroke-white"
@@ -45,17 +56,14 @@ export const Navbar = ({
               onClick={onRefresh}
             />
           )}
-          <button className="h-6 w-6 scale-up cursor-pointer dark:stroke-white"
-            aria-label="support me"
-            onClick={() => setIsSupportModalOpen(true)}>
-            ☕
-          </button>
         </div>
-        <p className="text-xl font-bold title dark:text-white relative mt-1">{GAME_TITLE}
-  {gameMode === GAME_MODE_DAILY ? (<span className="text-sm text-gray-500 dark:text-gray-300 title absolute leading-7 left-24">#{solutionIndex}</span>): (<span className="text-xl text-gray-500 dark:text-gray-300 absolute leading-7 left-24">∞</span>)}
-          
-      </p>
-        <div className="icon-group">
+        <div className="flex flex-1 justify-center items-center">
+          <p className="text-xl font-bold title dark:text-white relative mt-1">
+            {GAME_TITLE}
+            {gameModeIndicator()}
+          </p>
+        </div>
+        <div className="icon-group flex-1 justify-end">
           <ChartBarIcon
             className="h-6 w-6 mr-3 scale-up cursor-pointer dark:stroke-white"
             aria-label="stats"
