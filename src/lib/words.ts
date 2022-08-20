@@ -188,18 +188,17 @@ export const hashWord = (word: string) => {
 const wordCache = new Map<string, string>()
 const wordToIndex = new Map<string, number>()
 const fillCache = () => {
-	WORDS.forEach((w: string, i: number) => {
+	WORDS.map(localeAwareUpperCase).forEach((w: string, i: number) => {
 		wordCache.set(hashWord(w), w)
 		wordToIndex.set(w, i)
 	})
-  console.log(wordCache.keys())
 }
 fillCache();
 
 let unlimitedWords: string[] = []
 export const getUnlimitedHash = (index: number, seed: string) => {
   if(!unlimitedWords.length) {
-    unlimitedWords = shuffleSeed.shuffle(WORDS, seed)
+    unlimitedWords = shuffleSeed.shuffle(WORDS, seed).map(localeAwareUpperCase)
   }
   if (getWordOfDay(getIndex(getToday())) === unlimitedWords[index]) {
     index += 1

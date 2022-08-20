@@ -212,6 +212,10 @@ function App() {
   }
 
   const handleGameMode = (gameMode: string) => {
+    setGuesses([])
+    setCurrentGuess('')
+    setIsGameWon(false)
+    setIsGameLost(false)
     setGameMode(gameMode)
     setStoredGameMode(gameMode)
     if (gameMode === GAME_MODE_DAILY) {
@@ -294,6 +298,7 @@ function App() {
   }, [isGameWon, isGameLost, showSuccessAlert, solution.word.length])
 
   const onChar = (value: string) => {
+    debugger
     if (
       unicodeLength(`${currentGuess}${value}`) <= solution.word.length &&
       guesses.length < MAX_CHALLENGES &&
@@ -321,6 +326,7 @@ function App() {
   }
 
   const onEnter = () => {
+    debugger
     if (isGameWon || isGameLost) {
       return
     }
