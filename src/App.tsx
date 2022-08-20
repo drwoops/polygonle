@@ -454,6 +454,7 @@ function App() {
           gameStats={stats}
           isGameLost={isGameLost}
           isGameWon={isGameWon}
+          puzzleId={puzzleId}
           handleShareToClipboard={() => showSuccessAlert(GAME_COPIED_MESSAGE)}
           handleShareFailure={() =>
             showErrorAlert(SHARE_FAILURE_TEXT, {

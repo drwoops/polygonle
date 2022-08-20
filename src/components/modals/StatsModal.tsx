@@ -24,6 +24,7 @@ type Props = {
   gameStats: GameStats
   isGameLost: boolean
   isGameWon: boolean
+  puzzleId?: string
   handleShareToClipboard: () => void
   handleShareFailure: () => void
   handleMigrateStatsButton: () => void
@@ -45,6 +46,7 @@ export const StatsModal = ({
   gameStats,
   isGameLost,
   isGameWon,
+  puzzleId,
   handleShareToClipboard,
   handleShareFailure,
   handleMigrateStatsButton,
@@ -67,8 +69,10 @@ export const StatsModal = ({
                   isExpertMode,
                   isDarkMode,
                   isHighContrastMode,
+                  gameMode,
                   handleShareToClipboard,
-                  handleShareFailure
+                  handleShareFailure,
+                  puzzleId
                 )}
   const unlimitedButton = () => {
     const classNames = "inline-flex justify-center items-center text-center w-full rounded-md border border-transparent shadow-sm px-4 py-4 bg-indigo-600 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:text-sm row-span-1"

@@ -1,6 +1,6 @@
 import { getGuessStatuses } from './statuses'
-import { unicodeSplit, Shape, Solution} from './words'
-import { GAME_TITLE } from '../constants/strings'
+import { unicodeSplit, Shape, Solution } from './words'
+import { GAME_TITLE, GAME_MODE_UNLIMITED } from '../constants/strings'
 import { MAX_CHALLENGES } from '../constants/settings'
 import { UAParser } from 'ua-parser-js'
 
@@ -17,8 +17,10 @@ export const shareStatus = (
   isExpertMode: boolean,
   isDarkMode: boolean,
   isHighContrastMode: boolean,
+  gameMode: string,
   handleShareToClipboard: () => void,
-  handleShareFailure: () => void
+  handleShareFailure: () => void,
+  puzzleId?: string
 ) => {
   let modesSymbol = '';
   if(isHardMode && isExpertMode) {
@@ -28,12 +30,17 @@ export const shareStatus = (
   } else if (isExpertMode) {
     modesSymbol = '◆';
   }
+  let url = 'www.polygonle.com'
+  if(gameMode === GAME_MODE_UNLIMITED) {
+    url += `/${puzzleId}`
+  }
+  const problemNumber = gameMode === GAME_MODE_UNLIMITED ? '∞' : solution.index
 
   const textToShare =
-    `#${GAME_TITLE} ${solution.index} ${
+    `#${GAME_TITLE} ${problemNumber} ${
       lost ? 'X' : guesses.length
     }/${MAX_CHALLENGES}${modesSymbol}\n\n` +
-    'www.polygonle.com\n'
+    `${url}\n`
     +
     `${solution.puzzle.map((s: Shape) => s.shape).join('')}\n` + 
     generateEmojiGrid(
