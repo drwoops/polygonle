@@ -325,6 +325,11 @@ function App() {
     navigate(puzzleSlug(pid, seed))
   }
 
+  const onStartUnlimited = () => {
+    setIsStatsModalOpen(false)
+    handleGameMode(GAME_MODE_UNLIMITED)
+  }
+
   const onEnter = () => {
     if (isGameWon || isGameLost) {
       return
@@ -467,7 +472,7 @@ function App() {
           isHighContrastMode={isHighContrastMode}
           numberOfGuessesMade={guesses.length}
           onNextPuzzle={onRefresh}
-          onStartUnlimited={() => handleGameMode(GAME_MODE_UNLIMITED)}
+          onStartUnlimited={onStartUnlimited}
           gameMode={gameMode}
         />
         <MigrateStatsModal
