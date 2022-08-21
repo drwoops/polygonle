@@ -139,7 +139,6 @@ function App() {
           )
           puzzleId = pid
           unlimitedState.index = index
-          console.log(`slug ${puzzleSlug(puzzleId, seed)}`)
           window.history.pushState({}, '', puzzleSlug(puzzleId, seed))
         }
         return getSolutionFromPuzzleId(puzzleId!, seed)
@@ -410,7 +409,7 @@ function App() {
   }
 
   return (
-    <div className="h-screen flex flex-col">
+    <div className="h-full w-full fixed flex flex-col">
       <Navbar
         setIsInfoModalOpen={setIsInfoModalOpen}
         setIsStatsModalOpen={setIsStatsModalOpen}

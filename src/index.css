@@ -2,6 +2,12 @@
 @tailwind components;
 @tailwind utilities;
 
+html,
+body,
+#root {
+  height: 100vh;
+}
+
 :root {
   --animation-speed: 1000ms;
   --animation-speed-fast: 250ms;
