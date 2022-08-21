@@ -31,10 +31,10 @@ import {
 import {
   findFirstUnusedReveal,
   getDailySolution,
-  getUnlimitedHash,
+  getUnlimitedPuzzleId,
   getPattern,
   getPuzzle,
-  getSolutionFromHash,
+  getSolutionFromPuzzleId,
   getToday,
   isWordInWordList,
   unicodeLength,
@@ -60,7 +60,6 @@ import { Navbar } from './components/navbar/Navbar'
 import { isInAppBrowser } from './lib/browser'
 import { MigrateStatsModal } from './components/modals/MigrateStatsModal'
 
-// TODO: move keys to localStorage
 const HARD_MODE_KEY = 'gameMode' // don't modify even though this is confusing
 const HARD_MODE_HARD = 'hard'
 const HARD_MODE_NORMAL = 'normal'
@@ -80,7 +79,7 @@ function App() {
 
   const { showError: showErrorAlert, showSuccess: showSuccessAlert } =
     useAlert()
-  let { puzzleId } = useParams<{ puzzleId: string }>()
+  let { puzzleId, seed } = useParams<{ puzzleId: string; seed: string }>()
   const navigate = useNavigate()
   const [currentGuess, setCurrentGuess] = useState('')
   const [isGameWon, setIsGameWon] = useState(false)
@@ -103,6 +102,12 @@ function App() {
     getStoredIsHighContrastMode()
   )
   const [isRevealing, setIsRevealing] = useState(false)
+
+  const randomSeed = () => {
+    return [...Array(8)]
+      .map(() => Math.floor(Math.random() * 16).toString(16))
+      .join('')
+  }
   const [unlimitedState, setUnlimitedState] = useState(() => {
     let state = loadUnlimitedStateFromLocalStorage()
     if (state && state.seed) {
@@ -110,24 +115,49 @@ function App() {
     }
     return {
       index: state?.index ? state.index : 0,
-      seed: Math.random().toString(),
+      seed: randomSeed(),
     }
   })
+
+  const getUnlimitedPuzzleIdWithRetry = (index: number, seed: string) => {
+    let pidAndIndex = getUnlimitedPuzzleId(index, seed)
+    if (!pidAndIndex) {
+      // exhausted entire list so start over with a new seed
+      index = 0
+      seed = randomSeed()
+      pidAndIndex = getUnlimitedPuzzleId(index, seed)
+    }
+    if (!pidAndIndex) {
+      throw new Error('unlimited pid index out of range despite refresh')
+    }
+    return { ...pidAndIndex!, seed }
+  }
+
+  const puzzleSlug = (pid: string, s: string) => `/${pid}${s ? '/' + s : ''}`
+
+  const getShareUrl = (pid?: string, s?: string) => {
+    let url = 'www.polygonle.com'
+    if (gameMode === GAME_MODE_DAILY || !pid || !s) {
+      return url
+    }
+    return `${url}${puzzleSlug(pid, s)}`
+  }
 
   // get current solution (based on unlimited mode vs. daily
   const fetchedSolution = (() => {
     switch (gameMode) {
       case GAME_MODE_UNLIMITED:
         if (!puzzleId) {
-          const { hash, index } = getUnlimitedHash(
+          const { pid, index, seed } = getUnlimitedPuzzleIdWithRetry(
             unlimitedState.index,
             unlimitedState.seed
           )
-          puzzleId = hash
+          puzzleId = pid
           unlimitedState.index = index
-          window.history.pushState({}, '', `/${puzzleId}`)
+          console.log(`slug ${puzzleSlug(puzzleId, seed)}`)
+          window.history.pushState({}, '', puzzleSlug(puzzleId, seed))
         }
-        return getSolutionFromHash(puzzleId!)
+        return getSolutionFromPuzzleId(puzzleId!, seed)
       case GAME_MODE_DAILY:
       default:
         return getDailySolution(getToday())
@@ -319,14 +349,15 @@ function App() {
 
   const onRefresh = () => {
     clearGameState()
-    const { hash, index } = getUnlimitedHash(
+    const { pid, index, seed } = getUnlimitedPuzzleIdWithRetry(
       unlimitedState.index + 1,
       unlimitedState.seed
     )
     unlimitedState.index = index
+    unlimitedState.seed = seed
     setUnlimitedState(unlimitedState)
     saveUnlimitedStateToLocalStorage(unlimitedState)
-    navigate(`/${hash}`)
+    navigate(puzzleSlug(pid, seed))
   }
 
   const onEnter = () => {
@@ -454,7 +485,7 @@ function App() {
           gameStats={stats}
           isGameLost={isGameLost}
           isGameWon={isGameWon}
-          puzzleId={puzzleId}
+          shareUrl={getShareUrl(puzzleId, seed)}
           handleShareToClipboard={() => showSuccessAlert(GAME_COPIED_MESSAGE)}
           handleShareFailure={() =>
             showErrorAlert(SHARE_FAILURE_TEXT, {

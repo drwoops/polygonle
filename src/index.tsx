@@ -13,6 +13,7 @@ ReactDOM.render(
       <AlertProvider>
         <BrowserRouter>
           <Routes>
+            <Route path="/:puzzleId/:seed" element={<App />} />
             <Route path="/:puzzleId" element={<App />} />
             <Route path="*" element={<App />} />
           </Routes>

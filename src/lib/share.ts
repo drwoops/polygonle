@@ -20,7 +20,7 @@ export const shareStatus = (
   gameMode: string,
   handleShareToClipboard: () => void,
   handleShareFailure: () => void,
-  puzzleId?: string
+  shareUrl: string
 ) => {
   let modesSymbol = '';
   if(isHardMode && isExpertMode) {
@@ -30,17 +30,13 @@ export const shareStatus = (
   } else if (isExpertMode) {
     modesSymbol = '◆';
   }
-  let url = 'www.polygonle.com'
-  if(gameMode === GAME_MODE_UNLIMITED) {
-    url += `/${puzzleId}`
-  }
   const problemNumber = gameMode === GAME_MODE_UNLIMITED ? '∞' : solution.index
 
   const textToShare =
     `#${GAME_TITLE} ${problemNumber} ${
       lost ? 'X' : guesses.length
     }/${MAX_CHALLENGES}${modesSymbol}\n\n` +
-    `${url}\n`
+    `${shareUrl}\n`
     +
     `${solution.puzzle.map((s: Shape) => s.shape).join('')}\n` + 
     generateEmojiGrid(

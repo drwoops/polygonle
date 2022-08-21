@@ -196,22 +196,30 @@ const fillCache = () => {
 fillCache();
 
 let unlimitedWords: string[] = []
-export const getUnlimitedHash = (index: number, seed: string) => {
-  if(!unlimitedWords.length) {
+let unlimitedWordsSeed: string = '';
+export const getUnlimitedPuzzleId = (index: number, seed: string) => {
+  if(!unlimitedWords.length || seed !== unlimitedWordsSeed) {
     unlimitedWords = shuffleSeed.shuffle(WORDS, seed).map(localeAwareUpperCase)
+    unlimitedWordsSeed = seed
+  }
+  if(index >= unlimitedWords.length) {
+    return null;
   }
   if (getWordOfDay(getIndex(getToday())) === unlimitedWords[index]) {
-    index += 1
+    index += 1 // skip today's word
   }
-  return {hash: hashWord(unlimitedWords[index]), index}
+  if(index >= unlimitedWords.length) {
+    return null;
+  }
+  return {pid: hashWord(unlimitedWords[index]), index}
 }
 
-export const getSolutionFromHash = (hash: string) => {
+export const getSolutionFromPuzzleId = (hash: string, seed?: string) => {
   const word = wordCache.get(hash)
   if(!word) {
     return null
   }
-  const puzzleOfTheDay = getPuzzle(word)
+  const puzzleOfTheDay = getPuzzle(word, seed)
   return new Solution(word, puzzleOfTheDay, wordToIndex.get(word) || 0);
 }
 
