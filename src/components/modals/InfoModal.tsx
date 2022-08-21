@@ -38,19 +38,19 @@ export const InfoModal = ({ isOpen, handleClose }: Props) => {
       <div className="flex justify-evenly">
         <div className="flex justify-center items-center">
           <Shape shape={puzzle[0]} useMargin={false} />
-          <div className="-ml-2 text-sm text-gray-900 dark:text-gray-100 text-center"> = P </div>
+          <div className="-ml-2 text-sm text-gray-900 dark:text-gray-100 text-center font-bold"> = P </div>
         </div>
         <div className="flex justify-center items-center">
           <Shape shape={puzzle[1]} useMargin={false} />
-          <div className="-ml-2 text-sm text-gray-900 dark:text-gray-100 text-center"> = E </div>
+          <div className="-ml-2 text-sm text-gray-900 dark:text-gray-100 text-center font-bold"> = E </div>
         </div>
         <div className="flex justify-center items-center">
           <Shape shape={puzzle[2]} useMargin={false} />
-          <div className="-ml-2 text-sm text-gray-900 dark:text-gray-100 text-center"> = O </div>
+          <div className="-ml-2 text-sm text-gray-900 dark:text-gray-100 text-center font-bold"> = O </div>
         </div>
         <div className="flex justify-center items-center">
           <Shape shape={puzzle[4]} useMargin={false} />
-          <div className="-ml-2 text-sm text-gray-900 dark:text-gray-100 text-center"> = L </div >
+          <div className="-ml-2 text-sm text-gray-900 dark:text-gray-100 text-center font-bold"> = L </div >
         </div>
       </div>
 
