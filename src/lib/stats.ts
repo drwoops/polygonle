@@ -1,8 +1,8 @@
 import { MAX_CHALLENGES } from '../constants/settings'
 import {
   GameStats,
-  loadStatsFromLocalStorage,
-  saveStatsToLocalStorage,
+  getStoredStats,
+  setStoredStats,
 } from './localStorage'
 
 // In stats array elements 0-5 are successes in 1-6 trys
@@ -31,7 +31,7 @@ export const addStatsForCompletedGame = (
 
   stats.successRate = getSuccessRate(stats)
 
-  saveStatsToLocalStorage(stats)
+  setStoredStats(stats)
   return stats
 }
 
@@ -45,7 +45,7 @@ const defaultStats: GameStats = {
 }
 
 export const loadStats = () => {
-  return loadStatsFromLocalStorage() || defaultStats
+  return getStoredStats() || defaultStats
 }
 
 const getSuccessRate = (gameStats: GameStats) => {

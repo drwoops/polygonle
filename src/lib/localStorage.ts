@@ -1,22 +1,31 @@
 import {
   GAME_MODE_DAILY,
   GAME_MODE_UNLIMITED,
+  THEME_DARK,
+  THEME_LIGHT,
+  HARD_MODE_HARD,
+  HARD_MODE_NORMAL,
+  EXPERT_MODE_EXPERT,
+  EXPERT_MODE_NORMAL,
 } from '../constants/strings'
 const GAME_STATE_KEY = 'gameState'
 const UNLIMITED_STATE_KEY = 'unlimitedState'
 const HIGH_CONTRAST_KEY = 'highContrast'
 const GAME_MODE_KEY = 'dailyGameMode'
+const HARD_MODE_KEY = 'gameMode' // don't modify even though this is confusing
+const EXPERT_MODE_KEY = 'expertMode'
+const THEME_KEY = 'theme'
 
 export type StoredGameState = {
   guesses: string[]
   solution: string
 }
 
-export const saveGameStateToLocalStorage = (gameState: StoredGameState) => {
+export const setStoredGameState = (gameState: StoredGameState) => {
   localStorage.setItem(GAME_STATE_KEY, JSON.stringify(gameState))
 }
 
-export const loadGameStateFromLocalStorage = () => {
+export const getStoredGameState = () => {
   const state = localStorage.getItem(GAME_STATE_KEY)
   return state ? (JSON.parse(state) as StoredGameState) : null
 }
@@ -26,11 +35,11 @@ export type UnlimitedState = {
   seed: string
 }
 
-export const saveUnlimitedStateToLocalStorage = (unlimitedState: UnlimitedState) => {
+export const setStoredUnlimitedState = (unlimitedState: UnlimitedState) => {
   localStorage.setItem(UNLIMITED_STATE_KEY, JSON.stringify(unlimitedState))
 }
 
-export const loadUnlimitedStateFromLocalStorage = () => {
+export const getStoredUnlimitedState = () => {
   const state = localStorage.getItem(UNLIMITED_STATE_KEY)
   return state ? (JSON.parse(state) as UnlimitedState) : null
 }
@@ -46,11 +55,11 @@ export type GameStats = {
   successRate: number
 }
 
-export const saveStatsToLocalStorage = (gameStats: GameStats) => {
+export const setStoredStats = (gameStats: GameStats) => {
   localStorage.setItem(GAME_STAT_KEY, JSON.stringify(gameStats))
 }
 
-export const loadStatsFromLocalStorage = () => {
+export const getStoredStats = () => {
   const stats = localStorage.getItem(GAME_STAT_KEY)
   return stats ? (JSON.parse(stats) as GameStats) : null
 }
@@ -80,3 +89,45 @@ export const getStoredGameMode = (puzzleId?: string) => {
 export const setStoredGameMode = (gameMode: string) => {
   localStorage.setItem(GAME_MODE_KEY, gameMode)
 }
+
+export const getStoredDarkMode = () => {
+  const prefersDarkMode = window.matchMedia(
+    '(prefers-color-scheme: dark)'
+  ).matches
+  return localStorage.getItem(THEME_KEY)
+    ? localStorage.getItem(THEME_KEY) === THEME_DARK
+    : prefersDarkMode
+    ? true
+    : false
+}
+
+export const setStoredDarkMode = (isDark: boolean) => {
+  localStorage.setItem(THEME_KEY, isDark ? THEME_DARK : THEME_LIGHT)
+}
+
+export const getStoredHardMode = () => {
+  return localStorage.getItem(HARD_MODE_KEY)
+    ? localStorage.getItem(HARD_MODE_KEY) === HARD_MODE_HARD
+    : false
+}
+
+export const setStoredHardMode = (isHard: boolean) => {
+  localStorage.setItem(
+    HARD_MODE_KEY,
+    isHard ? HARD_MODE_HARD : HARD_MODE_NORMAL
+  )
+}
+
+export const getStoredExpertMode = () => {
+  return localStorage.getItem(EXPERT_MODE_KEY)
+      ? localStorage.getItem(EXPERT_MODE_KEY) === EXPERT_MODE_EXPERT
+      : false
+}
+
+export const setStoredExpertMode = (isExpert: boolean) => {
+  localStorage.setItem(
+        EXPERT_MODE_KEY,
+        isExpert ? EXPERT_MODE_EXPERT : EXPERT_MODE_NORMAL
+      )
+}
+

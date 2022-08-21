@@ -41,14 +41,20 @@ import {
 } from './lib/words'
 import { addStatsForCompletedGame, loadStats } from './lib/stats'
 import {
-  loadGameStateFromLocalStorage,
-  saveGameStateToLocalStorage,
-  loadUnlimitedStateFromLocalStorage,
-  saveUnlimitedStateToLocalStorage,
+  getStoredGameState,
+  setStoredGameState,
+  getStoredUnlimitedState,
+  setStoredUnlimitedState,
   setStoredIsHighContrastMode,
   getStoredIsHighContrastMode,
   getStoredGameMode,
   setStoredGameMode,
+  getStoredDarkMode,
+  setStoredDarkMode,
+  getStoredHardMode,
+  setStoredHardMode,
+  getStoredExpertMode,
+  setStoredExpertMode,
 } from './lib/localStorage'
 import { default as GraphemeSplitter } from 'grapheme-splitter'
 import { useParams, useNavigate } from 'react-router-dom'
@@ -60,23 +66,7 @@ import { Navbar } from './components/navbar/Navbar'
 import { isInAppBrowser } from './lib/browser'
 import { MigrateStatsModal } from './components/modals/MigrateStatsModal'
 
-const HARD_MODE_KEY = 'gameMode' // don't modify even though this is confusing
-const HARD_MODE_HARD = 'hard'
-const HARD_MODE_NORMAL = 'normal'
-
-const EXPERT_MODE_KEY = 'expertMode'
-const EXPERT_MODE_EXPERT = 'expert'
-const EXPERT_MODE_NORMAL = 'normal'
-
-const THEME_KEY = 'theme'
-const THEME_DARK = 'dark'
-const THEME_LIGHT = 'light'
-
 function App() {
-  const prefersDarkMode = window.matchMedia(
-    '(prefers-color-scheme: dark)'
-  ).matches
-
   const { showError: showErrorAlert, showSuccess: showSuccessAlert } =
     useAlert()
   let { puzzleId, seed } = useParams<{ puzzleId: string; seed: string }>()
@@ -91,13 +81,8 @@ function App() {
   const [currentRowClass, setCurrentRowClass] = useState('')
   const [isGameLost, setIsGameLost] = useState(false)
   const [gameMode, setGameMode] = useState(getStoredGameMode(puzzleId))
-  const [isDarkMode, setIsDarkMode] = useState(
-    localStorage.getItem(THEME_KEY)
-      ? localStorage.getItem(THEME_KEY) === THEME_DARK
-      : prefersDarkMode
-      ? true
-      : false
-  )
+
+  const [isDarkMode, setIsDarkMode] = useState(getStoredDarkMode())
   const [isHighContrastMode, setIsHighContrastMode] = useState(
     getStoredIsHighContrastMode()
   )
@@ -109,7 +94,7 @@ function App() {
       .join('')
   }
   const [unlimitedState, setUnlimitedState] = useState(() => {
-    let state = loadUnlimitedStateFromLocalStorage()
+    let state = getStoredUnlimitedState()
     if (state && state.seed) {
       return state
     }
@@ -172,7 +157,7 @@ function App() {
 
   // get current game
   const [guesses, setGuesses] = useState<string[]>(() => {
-    const loaded = loadGameStateFromLocalStorage()
+    const loaded = getStoredGameState()
     if (loaded?.solution !== solution.word) {
       return []
     }
@@ -191,22 +176,14 @@ function App() {
 
   const [stats, setStats] = useState(() => loadStats())
 
-  const [isHardMode, setIsHardMode] = useState(
-    localStorage.getItem(HARD_MODE_KEY)
-      ? localStorage.getItem(HARD_MODE_KEY) === HARD_MODE_HARD
-      : false
-  )
+  const [isHardMode, setIsHardMode] = useState(getStoredHardMode())
 
-  const [isExpertMode, setIsExpertMode] = useState(
-    localStorage.getItem(EXPERT_MODE_KEY)
-      ? localStorage.getItem(EXPERT_MODE_KEY) === EXPERT_MODE_EXPERT
-      : false
-  )
+  const [isExpertMode, setIsExpertMode] = useState(getStoredExpertMode())
 
   useEffect(() => {
     // if no game state on load,
     // show the user the how-to info modal
-    if (!loadGameStateFromLocalStorage()) {
+    if (!getStoredGameState()) {
       setTimeout(() => {
         setIsInfoModalOpen(true)
       }, WELCOME_INFO_MODAL_MS)
@@ -238,7 +215,7 @@ function App() {
 
   const handleDarkMode = (isDark: boolean) => {
     setIsDarkMode(isDark)
-    localStorage.setItem(THEME_KEY, isDark ? THEME_DARK : THEME_LIGHT)
+    setStoredDarkMode(isDark)
   }
 
   const clearGameState = () => {
@@ -264,15 +241,9 @@ function App() {
   }
 
   const handleHardMode = (isHard: boolean) => {
-    if (
-      guesses.length === 0 ||
-      localStorage.getItem(HARD_MODE_KEY) === HARD_MODE_HARD
-    ) {
+    if (guesses.length === 0 || getStoredHardMode()) {
       setIsHardMode(isHard)
-      localStorage.setItem(
-        HARD_MODE_KEY,
-        isHard ? HARD_MODE_HARD : HARD_MODE_NORMAL
-      )
+      setStoredHardMode(isHard)
       detectHexpertMode(isHard, isExpertMode)
     } else {
       showErrorAlert(HARD_MODE_ALERT_MESSAGE)
@@ -280,15 +251,9 @@ function App() {
   }
 
   const handleExpertMode = (isExpert: boolean) => {
-    if (
-      guesses.length === 0 ||
-      localStorage.getItem(EXPERT_MODE_KEY) === EXPERT_MODE_EXPERT
-    ) {
+    if (guesses.length === 0 || getStoredExpertMode()) {
       setIsExpertMode(isExpert)
-      localStorage.setItem(
-        EXPERT_MODE_KEY,
-        isExpert ? EXPERT_MODE_EXPERT : EXPERT_MODE_NORMAL
-      )
+      setStoredExpertMode(isExpert)
       detectHexpertMode(isHardMode, isExpert)
     } else {
       showErrorAlert(EXPERT_MODE_ALERT_MESSAGE)
@@ -305,11 +270,11 @@ function App() {
   }
 
   useEffect(() => {
-    saveGameStateToLocalStorage({ guesses, solution: solution.word })
+    setStoredGameState({ guesses, solution: solution.word })
   }, [guesses, solution.word])
 
   useEffect(() => {
-    saveUnlimitedStateToLocalStorage(unlimitedState)
+    setStoredUnlimitedState(unlimitedState)
   }, [unlimitedState])
 
   useEffect(() => {
@@ -356,7 +321,7 @@ function App() {
     unlimitedState.index = index
     unlimitedState.seed = seed
     setUnlimitedState(unlimitedState)
-    saveUnlimitedStateToLocalStorage(unlimitedState)
+    setStoredUnlimitedState(unlimitedState)
     navigate(puzzleSlug(pid, seed))
   }
 

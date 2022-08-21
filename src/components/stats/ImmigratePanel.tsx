@@ -2,8 +2,8 @@ import { SaveIcon } from '@heroicons/react/outline'
 import { useState } from 'react'
 import { decrypt } from '../../lib/encryption'
 import {
-  saveGameStateToLocalStorage,
-  saveStatsToLocalStorage,
+  setStoredGameState,
+  setStoredStats
 } from '../../lib/localStorage'
 import { MigrationStats } from '../modals/MigrateStatsModal'
 
@@ -59,11 +59,11 @@ export const ImmigratePanel = () => {
       if (!migrationStats) return
 
       if (migrationStats.gameState) {
-        saveGameStateToLocalStorage(migrationStats.gameState)
+        setStoredGameState(migrationStats.gameState)
       }
 
       if (migrationStats.statistics) {
-        saveStatsToLocalStorage(migrationStats.statistics)
+        setStoredStats(migrationStats.statistics)
       }
 
       alert('The site will now reload.')

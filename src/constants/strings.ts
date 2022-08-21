@@ -42,3 +42,15 @@ export const CURRENT_STREAK_TEXT = 'Current streak'
 export const BEST_STREAK_TEXT = 'Best streak'
 export const DISCOURAGE_INAPP_BROWSER_TEXT =
   "You are using an embedded browser and may experience problems sharing or saving your results. We encourage you rather to use your device's default browser."
+
+export const HARD_MODE_HARD = 'hard'
+export const HARD_MODE_NORMAL = 'normal'
+
+export const EXPERT_MODE_EXPERT = 'expert'
+export const EXPERT_MODE_NORMAL = 'normal'
+
+export const THEME_DARK = 'dark'
+export const THEME_LIGHT = 'light'
+
+
+
