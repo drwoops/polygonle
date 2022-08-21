@@ -2,6 +2,7 @@ import React, { Component, ErrorInfo, ReactNode } from 'react'
 import { getPuzzle } from './lib/words'
 import { Puzzle } from './components/puzzle/Puzzle'
 import { Grid } from './components/grid/Grid'
+import { getStoredDarkMode } from './lib/localStorage'
 
 interface Props {
   children?: ReactNode
@@ -27,7 +28,15 @@ class ErrorBoundary extends Component<Props, State> {
 
   public render() {
     if (this.state.hasError) {
+      const isDarkMode = getStoredDarkMode()
+      if (isDarkMode) {
+        document.documentElement.classList.add('dark')
+      } else {
+        document.documentElement.classList.remove('dark')
+      }
+
       const puzzle = getPuzzle('error')
+
       return (
         <>
           <div className="pt-2 px-1 pb-8 md:max-w-2xl w-full mx-auto sm:px-6 lg:px-8 flex flex-col grow">
