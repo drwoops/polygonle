@@ -133,7 +133,6 @@ function App() {
 
   // get current solution (based on unlimited mode vs. daily
   const fetchedSolution = useMemo(() => {
-    console.log(`fetching new solution ${gameMode}/${puzzleId}/${seed}`)
     switch (gameMode) {
       case GAME_MODE_UNLIMITED:
         return getSolutionFromPuzzleId(puzzleId!, seed)
@@ -149,12 +148,8 @@ function App() {
 
   const solution = fetchedSolution!
 
-  const getGuesses = useCallback(() => {
+  const guessesFromGameState = useMemo(() => {
     const loaded = getStoredGameState(gameMode)
-    console.log('getGuesses:')
-    console.log(
-      `${gameMode} loaded: ${loaded?.solution} solution: ${solution.word}`
-    )
     if (loaded?.solution !== solution.word) {
       return []
     }
@@ -169,10 +164,10 @@ function App() {
       })
     }
     return loaded.guesses
-  }, [gameMode, solution.word])
+  }, [gameMode, solution.word, showErrorAlert])
 
   // get current game
-  const [guesses, setGuesses] = useState<string[]>(getGuesses())
+  const [guesses, setGuesses] = useState<string[]>(guessesFromGameState)
 
   const [stats, setStats] = useState(() => loadStats())
 
@@ -280,10 +275,12 @@ function App() {
   }
 
   useEffect(() => {
-    console.log('storing new game mode and guesses')
-    console.log(JSON.stringify({ gameMode, guesses, solution: solution.word }))
     setStoredGameState({ gameMode, guesses, solution: solution.word })
   }, [gameMode, guesses, solution.word])
+
+  useEffect(() => {
+    setGuesses(guessesFromGameState)
+  }, [guessesFromGameState])
 
   useEffect(() => {
     setStoredUnlimitedState(unlimitedState)
