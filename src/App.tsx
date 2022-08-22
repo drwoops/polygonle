@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useMemo } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import { Grid } from './components/grid/Grid'
 import { Puzzle } from './components/puzzle/Puzzle'
 import { Keyboard } from './components/keyboard/Keyboard'
@@ -81,10 +81,9 @@ function App() {
   const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false)
   const [currentRowClass, setCurrentRowClass] = useState('')
   const [isGameLost, setIsGameLost] = useState(false)
-  const [gameMode, setGameMode] = useState(() =>
+  const getGameModeFromPuzzleId = (puzzleId?: string) =>
     puzzleId ? GAME_MODE_UNLIMITED : GAME_MODE_DAILY
-  )
-
+  const [gameMode, setGameMode] = useState(getGameModeFromPuzzleId(puzzleId))
   const [isDarkMode, setIsDarkMode] = useState(getStoredDarkMode())
   const [isHighContrastMode, setIsHighContrastMode] = useState(
     getStoredIsHighContrastMode()
@@ -133,7 +132,12 @@ function App() {
 
   // get current solution (based on unlimited mode vs. daily
   const fetchedSolution = useMemo(() => {
-    switch (gameMode) {
+    // on browser back/forward buttons gameMode is not set appropriately so reset
+    let mode = getGameModeFromPuzzleId(puzzleId)
+    if (mode !== gameMode) {
+      setGameMode(mode)
+    }
+    switch (mode) {
       case GAME_MODE_UNLIMITED:
         return getSolutionFromPuzzleId(puzzleId!, seed)
       case GAME_MODE_DAILY:
