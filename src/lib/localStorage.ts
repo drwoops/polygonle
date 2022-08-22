@@ -17,17 +17,38 @@ const EXPERT_MODE_KEY = 'expertMode'
 const THEME_KEY = 'theme'
 
 export type StoredGameState = {
+  gameMode: string
   guesses: string[]
   solution: string
 }
 
-export const setStoredGameState = (gameState: StoredGameState) => {
+export const setStoredGameStates = (gameState: StoredGameState[]) => {
   localStorage.setItem(GAME_STATE_KEY, JSON.stringify(gameState))
 }
 
-export const getStoredGameState = () => {
+export const getStoredGameStates = () => {
   const state = localStorage.getItem(GAME_STATE_KEY)
-  return state ? (JSON.parse(state) as StoredGameState) : null
+  if (!state) {
+    return []
+  }
+  const parsedStates = JSON.parse(state) as {};
+  return Array.isArray(parsedStates) ? parsedStates as StoredGameState[]: [];
+}
+
+export const getStoredGameState = (gameMode: string) => {
+  const states = getStoredGameStates()
+  return states.find((s: StoredGameState) => s.gameMode === gameMode)
+}
+
+export const setStoredGameState = (gs: StoredGameState) => {
+  const states = getStoredGameStates()
+  const index = states.findIndex((s: StoredGameState) => gs.gameMode === s.gameMode)
+  if (index === -1) {
+    states.push(gs)
+  } else {
+    states[index] = gs;
+  }
+  setStoredGameStates(states)
 }
 
 export type UnlimitedState = {

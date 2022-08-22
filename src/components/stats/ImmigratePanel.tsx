@@ -2,7 +2,7 @@ import { SaveIcon } from '@heroicons/react/outline'
 import { useState } from 'react'
 import { decrypt } from '../../lib/encryption'
 import {
-  setStoredGameState,
+  setStoredGameStates,
   setStoredStats
 } from '../../lib/localStorage'
 import { MigrationStats } from '../modals/MigrateStatsModal'
@@ -26,7 +26,7 @@ export const ImmigratePanel = () => {
         const migrationStats = JSON.parse(decrypt(text) ?? '') as MigrationStats
         if (
           !migrationStats ||
-          (!migrationStats.gameState && !migrationStats.statistics)
+          (!migrationStats.gameStates.length && !migrationStats.statistics)
         ) {
           textarea.classList.add('bg-red-400')
           textarea.classList.add('dark:bg-red-900')
@@ -58,8 +58,8 @@ export const ImmigratePanel = () => {
       ) as MigrationStats
       if (!migrationStats) return
 
-      if (migrationStats.gameState) {
-        setStoredGameState(migrationStats.gameState)
+      if (migrationStats.gameStates) {
+        setStoredGameStates(migrationStats.gameStates)
       }
 
       if (migrationStats.statistics) {

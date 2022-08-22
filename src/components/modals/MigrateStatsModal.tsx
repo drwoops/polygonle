@@ -11,7 +11,7 @@ type Props = {
 
 export type MigrationStats = {
   statistics: GameStats
-  gameState: StoredGameState | null
+  gameStates: StoredGameState[] 
 }
 
 export const MigrateStatsModal = ({ isOpen, handleClose }: Props) => {

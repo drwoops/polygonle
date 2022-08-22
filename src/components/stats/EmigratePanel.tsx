@@ -1,5 +1,5 @@
 import { loadStats } from '../../lib/stats'
-import { getStoredGameState } from '../../lib/localStorage'
+import { getStoredGameStates } from '../../lib/localStorage'
 import { MigrationStats } from '../modals/MigrateStatsModal'
 import { encrypt } from '../../lib/encryption'
 import { copyTextToClipboard } from '../../lib/clipboard'
@@ -10,11 +10,10 @@ export const EmigratePanel = () => {
   const [isCopyButtonEnabled, setIsCopyButtonEnabled] = useState(true)
   const [copyButtonText, setCopyButtonText] = useState('Copy')
   const stats = loadStats()
-  const gameState = getStoredGameState()
 
   const migrationStats: MigrationStats = {
     statistics: stats,
-    gameState: gameState,
+    gameStates: getStoredGameStates(),
   }
 
   const emigrationCode = encrypt(JSON.stringify(migrationStats))

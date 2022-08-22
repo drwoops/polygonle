@@ -159,7 +159,7 @@ function App() {
 
   // get current game
   const [guesses, setGuesses] = useState<string[]>(() => {
-    const loaded = getStoredGameState()
+    const loaded = getStoredGameState(gameMode)
     if (loaded?.solution !== solution.word) {
       return []
     }
@@ -185,7 +185,10 @@ function App() {
   useEffect(() => {
     // if no game state on load,
     // show the user the how-to info modal
-    if (!getStoredGameState()) {
+    if (
+      !getStoredGameState(GAME_MODE_DAILY) ||
+      !getStoredGameState(GAME_MODE_UNLIMITED)
+    ) {
       setTimeout(() => {
         setIsInfoModalOpen(true)
       }, WELCOME_INFO_MODAL_MS)
@@ -273,8 +276,8 @@ function App() {
   }
 
   useEffect(() => {
-    setStoredGameState({ guesses, solution: solution.word })
-  }, [guesses, solution.word])
+    setStoredGameState({ gameMode, guesses, solution: solution.word })
+  }, [gameMode, guesses, solution.word])
 
   useEffect(() => {
     setStoredUnlimitedState(unlimitedState)
@@ -316,6 +319,7 @@ function App() {
   }
 
   const onRefresh = () => {
+    setIsStatsModalOpen(false)
     clearGameState()
     const { pid, index, seed } = getUnlimitedPuzzleIdWithRetry(
       unlimitedState.index + 1,
