@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback, useMemo } from 'react'
 import { Grid } from './components/grid/Grid'
 import { Puzzle } from './components/puzzle/Puzzle'
 import { Keyboard } from './components/keyboard/Keyboard'
@@ -47,8 +47,6 @@ import {
   setStoredUnlimitedState,
   setStoredIsHighContrastMode,
   getStoredIsHighContrastMode,
-  getStoredGameMode,
-  setStoredGameMode,
   getStoredDarkMode,
   setStoredDarkMode,
   getStoredHardMode,
@@ -83,7 +81,9 @@ function App() {
   const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false)
   const [currentRowClass, setCurrentRowClass] = useState('')
   const [isGameLost, setIsGameLost] = useState(false)
-  const [gameMode, setGameMode] = useState(getStoredGameMode(puzzleId))
+  const [gameMode, setGameMode] = useState(() =>
+    puzzleId ? GAME_MODE_UNLIMITED : GAME_MODE_DAILY
+  )
 
   const [isDarkMode, setIsDarkMode] = useState(getStoredDarkMode())
   const [isHighContrastMode, setIsHighContrastMode] = useState(
@@ -132,24 +132,16 @@ function App() {
   }
 
   // get current solution (based on unlimited mode vs. daily
-  const fetchedSolution = (() => {
+  const fetchedSolution = useMemo(() => {
+    console.log(`fetching new solution ${gameMode}/${puzzleId}/${seed}`)
     switch (gameMode) {
       case GAME_MODE_UNLIMITED:
-        if (!puzzleId) {
-          const { pid, index, seed } = getUnlimitedPuzzleIdWithRetry(
-            unlimitedState.index,
-            unlimitedState.seed
-          )
-          puzzleId = pid
-          unlimitedState.index = index
-          window.history.pushState({}, '', puzzleSlug(puzzleId, seed))
-        }
         return getSolutionFromPuzzleId(puzzleId!, seed)
       case GAME_MODE_DAILY:
       default:
         return getDailySolution(getToday())
     }
-  })()
+  }, [gameMode, puzzleId, seed])
 
   if (!fetchedSolution) {
     throw new Error('puzzle not found')
@@ -157,9 +149,12 @@ function App() {
 
   const solution = fetchedSolution!
 
-  // get current game
-  const [guesses, setGuesses] = useState<string[]>(() => {
+  const getGuesses = useCallback(() => {
     const loaded = getStoredGameState(gameMode)
+    console.log('getGuesses:')
+    console.log(
+      `${gameMode} loaded: ${loaded?.solution} solution: ${solution.word}`
+    )
     if (loaded?.solution !== solution.word) {
       return []
     }
@@ -174,7 +169,10 @@ function App() {
       })
     }
     return loaded.guesses
-  })
+  }, [gameMode, solution.word])
+
+  // get current game
+  const [guesses, setGuesses] = useState<string[]>(getGuesses())
 
   const [stats, setStats] = useState(() => loadStats())
 
@@ -186,7 +184,7 @@ function App() {
     // if no game state on load,
     // show the user the how-to info modal
     if (
-      !getStoredGameState(GAME_MODE_DAILY) ||
+      !getStoredGameState(GAME_MODE_DAILY) &&
       !getStoredGameState(GAME_MODE_UNLIMITED)
     ) {
       setTimeout(() => {
@@ -225,7 +223,7 @@ function App() {
 
   const clearGameState = () => {
     setIsAlertVisible(false)
-    setGuesses([])
+    //setGuesses([])
     setCurrentGuess('')
     setIsGameWon(false)
     setIsGameLost(false)
@@ -234,9 +232,15 @@ function App() {
   const handleGameMode = (gameMode: string) => {
     clearGameState()
     setGameMode(gameMode)
-    setStoredGameMode(gameMode)
     if (gameMode === GAME_MODE_DAILY) {
       navigate('/')
+    } else {
+      const { pid, index, seed } = getUnlimitedPuzzleIdWithRetry(
+        unlimitedState.index,
+        unlimitedState.seed
+      )
+      unlimitedState.index = index
+      navigate(puzzleSlug(pid, seed))
     }
   }
 
@@ -276,6 +280,8 @@ function App() {
   }
 
   useEffect(() => {
+    console.log('storing new game mode and guesses')
+    console.log(JSON.stringify({ gameMode, guesses, solution: solution.word }))
     setStoredGameState({ gameMode, guesses, solution: solution.word })
   }, [gameMode, guesses, solution.word])
 

@@ -11,7 +11,6 @@ import {
 const GAME_STATE_KEY = 'gameState'
 const UNLIMITED_STATE_KEY = 'unlimitedState'
 const HIGH_CONTRAST_KEY = 'highContrast'
-const GAME_MODE_KEY = 'dailyGameMode'
 const HARD_MODE_KEY = 'gameMode' // don't modify even though this is confusing
 const EXPERT_MODE_KEY = 'expertMode'
 const THEME_KEY = 'theme'
@@ -96,19 +95,6 @@ export const setStoredIsHighContrastMode = (isHighContrast: boolean) => {
 export const getStoredIsHighContrastMode = () => {
   const highContrast = localStorage.getItem(HIGH_CONTRAST_KEY)
   return highContrast === '1'
-}
-
-export const getStoredGameMode = (puzzleId?: string) => {
-  const storedGameMode = localStorage.getItem(GAME_MODE_KEY)
-  const gameMode = puzzleId ? GAME_MODE_UNLIMITED : (storedGameMode || GAME_MODE_DAILY)
-  if (gameMode !== storedGameMode) {
-    setStoredGameMode(gameMode)
-  }
-  return gameMode
-}
-
-export const setStoredGameMode = (gameMode: string) => {
-  localStorage.setItem(GAME_MODE_KEY, gameMode)
 }
 
 export const getStoredDarkMode = () => {
