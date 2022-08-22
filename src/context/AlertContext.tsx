@@ -4,6 +4,7 @@ import {
   useCallback,
   useContext,
   useState,
+  useMemo,
 } from 'react'
 import { ALERT_TIME_MS } from '../constants/settings'
 
@@ -20,6 +21,7 @@ type AlertContextValue = {
   status: AlertStatus
   message: string | null
   isVisible: boolean
+  setIsVisible: (visible: boolean) => void
   showSuccess: (message: string, options?: ShowOptions) => void
   showError: (message: string, options?: ShowOptions) => void
 }
@@ -28,6 +30,7 @@ export const AlertContext = createContext<AlertContextValue | null>({
   status: 'success',
   message: null,
   isVisible: false,
+  setIsVisible: (boolean) => null,
   showSuccess: () => null,
   showError: () => null,
 })
@@ -43,6 +46,10 @@ export const AlertProvider = ({ children }: Props) => {
   const [status, setStatus] = useState<AlertStatus>('success')
   const [message, setMessage] = useState<string | null>(null)
   const [isVisible, setIsVisible] = useState(false)
+
+  const isVisibleState = useMemo(() => ({
+       isVisible, setIsVisible 
+    }), [isVisible, setIsVisible]);
 
   const show = useCallback(
     (showStatus: AlertStatus, newMessage: string, options?: ShowOptions) => {
@@ -90,9 +97,9 @@ export const AlertProvider = ({ children }: Props) => {
       value={{
         status,
         message,
-        isVisible,
         showError,
         showSuccess,
+        ...isVisibleState,
       }}
     >
       {children}

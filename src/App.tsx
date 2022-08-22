@@ -67,8 +67,11 @@ import { isInAppBrowser } from './lib/browser'
 import { MigrateStatsModal } from './components/modals/MigrateStatsModal'
 
 function App() {
-  const { showError: showErrorAlert, showSuccess: showSuccessAlert } =
-    useAlert()
+  const {
+    showError: showErrorAlert,
+    showSuccess: showSuccessAlert,
+    setIsVisible: setIsAlertVisible,
+  } = useAlert()
   let { puzzleId, seed } = useParams<{ puzzleId: string; seed: string }>()
   const navigate = useNavigate()
   const [currentGuess, setCurrentGuess] = useState('')
@@ -218,6 +221,7 @@ function App() {
   }
 
   const clearGameState = () => {
+    setIsAlertVisible(false)
     setGuesses([])
     setCurrentGuess('')
     setIsGameWon(false)

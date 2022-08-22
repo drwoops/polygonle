@@ -1296,7 +1296,6 @@ export const WORDS = [
 "notebook",
 "tortilla",
 "hallways",
-"illegals",
 "edited",
 "stricter",
 "pajamas",
