@@ -4,6 +4,7 @@ import {
   InformationCircleIcon,
   RefreshIcon,
 } from '@heroicons/react/outline'
+import { HeartIcon } from '@heroicons/react/solid'
 import { GAME_TITLE, GAME_MODE_DAILY, GAME_MODE_UNLIMITED} from '../../constants/strings'
 
 type Props = {
@@ -42,11 +43,13 @@ export const Navbar = ({
             tabIndex={0}
             onClick={() => setIsInfoModalOpen(true)}
           />
-          <button className="h-6 w-6 mr-2 scale-up cursor-pointer dark:stroke-white"
-            aria-label="support me"
-            onClick={() => setIsSupportModalOpen(true)}>
-            ☕
-          </button>
+          <HeartIcon
+            className="h-6 w-6 mr-2 scale-up cursor-pointer text-red-500"
+            aria-label="community"
+            role="button"
+            tabIndex={0}
+            onClick={() => setIsSupportModalOpen(true)}
+          />
           {gameMode === GAME_MODE_UNLIMITED && (
             <RefreshIcon
               className="h-6 w-6 mr-2 scale-up cursor-pointer dark:stroke-white"
