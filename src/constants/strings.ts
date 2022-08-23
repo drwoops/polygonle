@@ -52,5 +52,29 @@ export const EXPERT_MODE_NORMAL = 'normal'
 export const THEME_DARK = 'dark'
 export const THEME_LIGHT = 'light'
 
+export const GA_CATEGORY_SETTINGS = 'settings'
+export const GA_CATEGORY_MODALS = 'modals'
+export const GA_CATEGORY_GAME = 'game'
+export const GA_CATEGORY_NAV = 'nav'
 
+// settings
+export const GA_ACTION_GAMEMODE_TOGGLE = 'gamemode_toggle'
+export const GA_ACTION_DARKMODE_TOGGLE = 'darkmode_toggle'
+export const GA_ACTION_HARDMODE_TOGGLE = 'hardmode_toggle'
+export const GA_ACTION_EXPERTMODE_TOGGLE = 'expertmode_toggle'
+export const GA_ACTION_HIGHCONTRASTMODE_TOGGLE = 'highcontrastmode_toggle'
 
+// modals
+export const GA_ACTION_INFOMODAL_OPEN = 'infomodal_open'
+export const GA_ACTION_STATSMODAL_OPEN = 'statsmodal_open'
+export const GA_ACTION_SUPPORTMODAL_OPEN = 'supportmodal_open'
+export const GA_ACTION_MIGRATESTATSMODAL_OPEN = 'migratstatsmodal_open'
+export const GA_ACTION_SETTINGMODAL_OPEN = 'settingsmodal_open'
+
+// game
+export const GA_ACTION_GUESS = 'guess'
+export const GA_ACTION_GAME_FINISH = 'game_finish'
+
+// actions
+export const GA_ACTION_REFRESH = 'refresh'
+export const GA_ACTION_SHARE = 'share'

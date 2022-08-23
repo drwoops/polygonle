@@ -2,10 +2,13 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import './index.css'
 import App from './App'
+import ReactGA from 'react-ga4'
 import ErrorBoundary from './ErrorBoundary'
 import reportWebVitals from './reportWebVitals'
 import { AlertProvider } from './context/AlertContext'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import { GA_MEASUREMENT_ID } from './constants/settings'
+ReactGA.initialize(GA_MEASUREMENT_ID)
 
 ReactDOM.render(
   <React.StrictMode>

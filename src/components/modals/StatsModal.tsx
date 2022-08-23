@@ -12,9 +12,13 @@ import {
   NEW_WORD_TEXT,
   SHARE_TEXT,
   GAME_MODE_UNLIMITED,
+  GA_CATEGORY_NAV,
+  GA_ACTION_SHARE,
 } from '../../constants/strings'
+
 import { MigrationIntro } from '../stats/MigrationIntro'
 import { ENABLE_MIGRATE_STATS } from '../../constants/settings'
+import ReactGA from 'react-ga4';
 
 type Props = {
   isOpen: boolean
@@ -61,6 +65,10 @@ export const StatsModal = ({
 }: Props) => {
   const tomorrow = getTomorrow() 
   const share = () => {
+                ReactGA.event({
+                  category: GA_CATEGORY_NAV,
+                  action: GA_ACTION_SHARE,
+                })
                 shareStatus(
                   solution,
                   guesses,

@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from 'react'
+import { useState, useEffect, useMemo, useCallback } from 'react'
 import { Grid } from './components/grid/Grid'
 import { Puzzle } from './components/puzzle/Puzzle'
 import { Keyboard } from './components/keyboard/Keyboard'
@@ -20,6 +20,23 @@ import {
   SHARE_FAILURE_TEXT,
   GAME_MODE_DAILY,
   GAME_MODE_UNLIMITED,
+  GA_CATEGORY_SETTINGS,
+  GA_CATEGORY_MODALS,
+  GA_CATEGORY_GAME,
+  GA_CATEGORY_NAV,
+  GA_ACTION_GAMEMODE_TOGGLE,
+  GA_ACTION_DARKMODE_TOGGLE,
+  GA_ACTION_HARDMODE_TOGGLE,
+  GA_ACTION_EXPERTMODE_TOGGLE,
+  GA_ACTION_HIGHCONTRASTMODE_TOGGLE,
+  GA_ACTION_INFOMODAL_OPEN,
+  GA_ACTION_STATSMODAL_OPEN,
+  GA_ACTION_SUPPORTMODAL_OPEN,
+  GA_ACTION_MIGRATESTATSMODAL_OPEN,
+  GA_ACTION_SETTINGMODAL_OPEN,
+  GA_ACTION_GUESS,
+  GA_ACTION_GAME_FINISH,
+  GA_ACTION_REFRESH,
 } from './constants/strings'
 import {
   MAX_CHALLENGES,
@@ -63,6 +80,7 @@ import { useAlert } from './context/AlertContext'
 import { Navbar } from './components/navbar/Navbar'
 import { isInAppBrowser } from './lib/browser'
 import { MigrateStatsModal } from './components/modals/MigrateStatsModal'
+import ReactGA from 'react-ga4'
 
 function App() {
   const {
@@ -74,11 +92,54 @@ function App() {
   const navigate = useNavigate()
   const [currentGuess, setCurrentGuess] = useState('')
   const [isGameWon, setIsGameWon] = useState(false)
+
   const [isInfoModalOpen, setIsInfoModalOpen] = useState(false)
   const [isStatsModalOpen, setIsStatsModalOpen] = useState(false)
   const [isSupportModalOpen, setIsSupportModalOpen] = useState(false)
   const [isMigrateStatsModalOpen, setIsMigrateStatsModalOpen] = useState(false)
   const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false)
+
+  const modalOpenWrapper = (
+    setter: (setting: boolean) => void,
+    action: string
+  ) => {
+    return (setting: boolean) => {
+      ReactGA.event({
+        category: GA_CATEGORY_MODALS,
+        action: action,
+        value: +setting,
+      })
+      setter(setting)
+    }
+  }
+
+  const setIsInfoModalOpenGA = modalOpenWrapper(
+    setIsInfoModalOpen,
+    GA_ACTION_INFOMODAL_OPEN
+  )
+  const setIsSupportModalOpenGA = modalOpenWrapper(
+    setIsSupportModalOpen,
+    GA_ACTION_SUPPORTMODAL_OPEN
+  )
+  const setIsMigrateStatsModalOpenGA = modalOpenWrapper(
+    setIsMigrateStatsModalOpen,
+    GA_ACTION_MIGRATESTATSMODAL_OPEN
+  )
+  const setIsSettingsModalOpenGA = modalOpenWrapper(
+    setIsSettingsModalOpen,
+    GA_ACTION_SETTINGMODAL_OPEN
+  )
+
+  // inline this so we can wrap in useCallback
+  const setIsStatsModalOpenGA = useCallback((isOpen: boolean) => {
+    ReactGA.event({
+      category: GA_CATEGORY_MODALS,
+      action: GA_ACTION_STATSMODAL_OPEN,
+      value: +isOpen,
+    })
+    setIsStatsModalOpen(isOpen)
+  }, [])
+
   const [currentRowClass, setCurrentRowClass] = useState('')
   const [isGameLost, setIsGameLost] = useState(false)
   const getGameModeFromPuzzleId = (puzzleId?: string) =>
@@ -187,7 +248,7 @@ function App() {
       !getStoredGameState(GAME_MODE_UNLIMITED)
     ) {
       setTimeout(() => {
-        setIsInfoModalOpen(true)
+        setIsInfoModalOpenGA(true)
       }, WELCOME_INFO_MODAL_MS)
     }
   })
@@ -216,19 +277,27 @@ function App() {
   }, [isDarkMode, isHighContrastMode])
 
   const handleDarkMode = (isDark: boolean) => {
+    ReactGA.event({
+      category: GA_CATEGORY_SETTINGS,
+      action: GA_ACTION_DARKMODE_TOGGLE,
+    })
     setIsDarkMode(isDark)
     setStoredDarkMode(isDark)
   }
 
   const clearGameState = () => {
     setIsAlertVisible(false)
-    //setGuesses([])
     setCurrentGuess('')
     setIsGameWon(false)
     setIsGameLost(false)
   }
 
   const handleGameMode = (gameMode: string) => {
+    ReactGA.event({
+      category: GA_CATEGORY_SETTINGS,
+      action: GA_ACTION_GAMEMODE_TOGGLE,
+    })
+
     clearGameState()
     setGameMode(gameMode)
     if (gameMode === GAME_MODE_DAILY) {
@@ -250,6 +319,10 @@ function App() {
   }
 
   const handleHardMode = (isHard: boolean) => {
+    ReactGA.event({
+      category: GA_CATEGORY_SETTINGS,
+      action: GA_ACTION_HARDMODE_TOGGLE,
+    })
     if (guesses.length === 0 || getStoredHardMode()) {
       setIsHardMode(isHard)
       setStoredHardMode(isHard)
@@ -260,6 +333,10 @@ function App() {
   }
 
   const handleExpertMode = (isExpert: boolean) => {
+    ReactGA.event({
+      category: GA_CATEGORY_SETTINGS,
+      action: GA_ACTION_EXPERTMODE_TOGGLE,
+    })
     if (guesses.length === 0 || getStoredExpertMode()) {
       setIsExpertMode(isExpert)
       setStoredExpertMode(isExpert)
@@ -270,6 +347,10 @@ function App() {
   }
 
   const handleHighContrastMode = (isHighContrast: boolean) => {
+    ReactGA.event({
+      category: GA_CATEGORY_SETTINGS,
+      action: GA_ACTION_HIGHCONTRASTMODE_TOGGLE,
+    })
     setIsHighContrastMode(isHighContrast)
     setStoredIsHighContrastMode(isHighContrast)
   }
@@ -298,16 +379,22 @@ function App() {
 
       showSuccessAlert(winMessage, {
         delayMs,
-        onClose: () => setIsStatsModalOpen(true),
+        onClose: () => setIsStatsModalOpenGA(true),
       })
     }
 
     if (isGameLost) {
       setTimeout(() => {
-        setIsStatsModalOpen(true)
+        setIsStatsModalOpenGA(true)
       }, (solution.word.length + 1) * REVEAL_TIME_MS)
     }
-  }, [isGameWon, isGameLost, showSuccessAlert, solution.word.length])
+  }, [
+    isGameWon,
+    isGameLost,
+    showSuccessAlert,
+    solution.word.length,
+    setIsStatsModalOpenGA,
+  ])
 
   const onChar = (value: string) => {
     if (
@@ -326,7 +413,11 @@ function App() {
   }
 
   const onRefresh = () => {
-    setIsStatsModalOpen(false)
+    ReactGA.event({
+      category: GA_CATEGORY_NAV,
+      action: GA_ACTION_REFRESH,
+    })
+    setIsStatsModalOpenGA(false)
     clearGameState()
     const { pid, index, seed } = getUnlimitedPuzzleIdWithRetry(
       unlimitedState.index + 1,
@@ -340,8 +431,24 @@ function App() {
   }
 
   const onStartUnlimited = () => {
-    setIsStatsModalOpen(false)
+    setIsStatsModalOpenGA(false)
     handleGameMode(GAME_MODE_UNLIMITED)
+  }
+
+  const guessGA = (accepted: boolean) => {
+    ReactGA.event({
+      category: GA_CATEGORY_GAME,
+      action: GA_ACTION_GUESS,
+      value: +accepted,
+    })
+  }
+
+  const gameFinishGA = (won: boolean) => {
+    ReactGA.event({
+      category: GA_CATEGORY_GAME,
+      action: GA_ACTION_GAME_FINISH,
+      value: +won,
+    })
   }
 
   const onEnter = () => {
@@ -350,6 +457,7 @@ function App() {
     }
 
     if (!(unicodeLength(currentGuess) === solution.word.length)) {
+      guessGA(false)
       setCurrentRowClass('jiggle')
       return showErrorAlert(NOT_ENOUGH_LETTERS_MESSAGE, {
         onClose: clearCurrentRowClass,
@@ -357,6 +465,7 @@ function App() {
     }
 
     if (!isWordInWordList(currentGuess)) {
+      guessGA(false)
       setCurrentRowClass('jiggle')
       return showErrorAlert(WORD_NOT_FOUND_MESSAGE, {
         onClose: clearCurrentRowClass,
@@ -371,6 +480,7 @@ function App() {
         guesses
       )
       if (firstMissingReveal) {
+        guessGA(false)
         setCurrentRowClass('jiggle')
         return showErrorAlert(firstMissingReveal, {
           onClose: clearCurrentRowClass,
@@ -385,11 +495,13 @@ function App() {
         getPuzzle(currentGuess, /* seed to compare patterns */ solution.word)
       ) !== getPattern(solution.puzzle)
     ) {
+      guessGA(false)
       return showErrorAlert(PATTERN_MUST_MATCH_MESSAGE, {
         onClose: clearCurrentRowClass,
       })
     }
 
+    guessGA(true)
     setIsRevealing(true)
     // turn this back off after all
     // chars have been revealed
@@ -408,11 +520,13 @@ function App() {
       setCurrentGuess('')
 
       if (winningWord) {
+        gameFinishGA(true)
         setStats(addStatsForCompletedGame(stats, guesses.length))
         return setIsGameWon(true)
       }
 
       if (guesses.length === MAX_CHALLENGES - 1) {
+        gameFinishGA(false)
         setStats(addStatsForCompletedGame(stats, guesses.length + 1))
         setIsGameLost(true)
         showErrorAlert(CORRECT_WORD_MESSAGE(solution.word), {
@@ -426,10 +540,10 @@ function App() {
   return (
     <div className="h-full w-full fixed flex flex-col">
       <Navbar
-        setIsInfoModalOpen={setIsInfoModalOpen}
-        setIsStatsModalOpen={setIsStatsModalOpen}
-        setIsSettingsModalOpen={setIsSettingsModalOpen}
-        setIsSupportModalOpen={setIsSupportModalOpen}
+        setIsInfoModalOpen={setIsInfoModalOpenGA}
+        setIsStatsModalOpen={setIsStatsModalOpenGA}
+        setIsSettingsModalOpen={setIsSettingsModalOpenGA}
+        setIsSupportModalOpen={setIsSupportModalOpenGA}
         onRefresh={onRefresh}
         gameMode={gameMode}
         solutionIndex={solution.index}
@@ -455,15 +569,15 @@ function App() {
         />
         <InfoModal
           isOpen={isInfoModalOpen}
-          handleClose={() => setIsInfoModalOpen(false)}
+          handleClose={() => setIsInfoModalOpenGA(false)}
         />
         <SupportModal
           isOpen={isSupportModalOpen}
-          handleClose={() => setIsSupportModalOpen(false)}
+          handleClose={() => setIsSupportModalOpenGA(false)}
         />
         <StatsModal
           isOpen={isStatsModalOpen}
-          handleClose={() => setIsStatsModalOpen(false)}
+          handleClose={() => setIsStatsModalOpenGA(false)}
           solution={solution}
           guesses={guesses}
           gameStats={stats}
@@ -477,8 +591,8 @@ function App() {
             })
           }
           handleMigrateStatsButton={() => {
-            setIsStatsModalOpen(false)
-            setIsMigrateStatsModalOpen(true)
+            setIsStatsModalOpenGA(false)
+            setIsMigrateStatsModalOpenGA(true)
           }}
           isHardMode={isHardMode}
           isExpertMode={isExpertMode}
@@ -491,11 +605,11 @@ function App() {
         />
         <MigrateStatsModal
           isOpen={isMigrateStatsModalOpen}
-          handleClose={() => setIsMigrateStatsModalOpen(false)}
+          handleClose={() => setIsMigrateStatsModalOpenGA(false)}
         />
         <SettingsModal
           isOpen={isSettingsModalOpen}
-          handleClose={() => setIsSettingsModalOpen(false)}
+          handleClose={() => setIsSettingsModalOpenGA(false)}
           isHardMode={isHardMode}
           handleHardMode={handleHardMode}
           isExpertMode={isExpertMode}

@@ -1766,7 +1766,6 @@ export const WORDS = [
 "fibrosis",
 "doodle",
 "excuses",
-"pereira",
 "averaged",
 "coercion",
 "circular",

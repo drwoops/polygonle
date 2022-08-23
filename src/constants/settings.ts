@@ -7,3 +7,4 @@ export const DISCOURAGE_INAPP_BROWSERS = true
 export const ENABLE_MIGRATE_STATS = true
 export const BLOWFISH_KEY = 'xcQUAHsik#Thq&LG*8es2DsZ$3bw^e'
 export const BLOWFISH_IV = '#45XmF^w'
+export const GA_MEASUREMENT_ID = 'G-DMDT87M2SK'
