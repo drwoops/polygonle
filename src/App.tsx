@@ -538,7 +538,7 @@ function App() {
   }
 
   return (
-    <div className="h-full w-full fixed flex flex-col">
+    <div id="app" className="flex flex-col">
       <Navbar
         setIsInfoModalOpen={setIsInfoModalOpenGA}
         setIsStatsModalOpen={setIsStatsModalOpenGA}
