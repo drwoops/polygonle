@@ -492,7 +492,10 @@ function App() {
     if (
       isExpertMode &&
       getPattern(
-        getPuzzle(currentGuess, /* seed to compare patterns */ seed)
+        getPuzzle(
+          currentGuess,
+          /* seed to compare patterns */ seed ?? solution.word
+        )
       ) !== getPattern(solution.puzzle)
     ) {
       guessGA(false)
