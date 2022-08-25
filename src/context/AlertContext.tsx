@@ -10,16 +10,23 @@ import { ALERT_TIME_MS } from '../constants/settings'
 
 type AlertStatus = 'success' | 'error' | undefined
 
+export type AlertData = {
+  type?: string
+  status?: string
+}
+
 type ShowOptions = {
   persist?: boolean
   delayMs?: number
   durationMs?: number
   onClose?: () => void
+  data?: AlertData
 }
 
 type AlertContextValue = {
   status: AlertStatus
   message: string | null
+  data: AlertData
   isVisible: boolean
   setIsVisible: (visible: boolean) => void
   showSuccess: (message: string, options?: ShowOptions) => void
@@ -29,6 +36,7 @@ type AlertContextValue = {
 export const AlertContext = createContext<AlertContextValue | null>({
   status: 'success',
   message: null,
+  data: {},
   isVisible: false,
   setIsVisible: (boolean) => null,
   showSuccess: () => null,
@@ -45,6 +53,7 @@ type Props = {
 export const AlertProvider = ({ children }: Props) => {
   const [status, setStatus] = useState<AlertStatus>('success')
   const [message, setMessage] = useState<string | null>(null)
+  const [data, setData] = useState<AlertData>({})
   const [isVisible, setIsVisible] = useState(false)
 
   const isVisibleState = useMemo(() => ({
@@ -63,6 +72,7 @@ export const AlertProvider = ({ children }: Props) => {
       setTimeout(() => {
         setStatus(showStatus)
         setMessage(newMessage)
+        setData(options?.data ?? {})
         setIsVisible(true)
 
         if (!persist) {
@@ -75,19 +85,23 @@ export const AlertProvider = ({ children }: Props) => {
         }
       }, delayMs)
     },
-    [setStatus, setMessage, setIsVisible]
+    [setStatus, setMessage, setIsVisible, setData]
   )
 
   const showError = useCallback(
     (newMessage: string, options?: ShowOptions) => {
-      show('error', newMessage, options)
+      const opts = options ?? {}
+      opts.data = {...opts.data, status: 'error'}
+      show('error', newMessage, opts)
     },
     [show]
   )
 
   const showSuccess = useCallback(
     (newMessage: string, options?: ShowOptions) => {
-      show('success', newMessage, options)
+      const opts = options ?? {}
+      opts.data = {...opts.data, status: 'success'}
+      show('success', newMessage, opts)
     },
     [show]
   )
@@ -99,6 +113,7 @@ export const AlertProvider = ({ children }: Props) => {
         message,
         showError,
         showSuccess,
+        data,
         ...isVisibleState,
       }}
     >

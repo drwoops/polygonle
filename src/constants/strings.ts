@@ -52,6 +52,10 @@ export const EXPERT_MODE_NORMAL = 'normal'
 export const THEME_DARK = 'dark'
 export const THEME_LIGHT = 'light'
 
+export const ALERT_DATA_SETTING = 'setting'
+export const ALERT_DATA_GAME_END = 'game_end'
+export const ALERT_DATA_GUESS = 'guess'
+
 export const GA_CATEGORY_SETTINGS = 'settings'
 export const GA_CATEGORY_MODALS = 'modals'
 export const GA_CATEGORY_GAME = 'game'
@@ -78,3 +82,4 @@ export const GA_ACTION_GAME_FINISH = 'game_finish'
 // actions
 export const GA_ACTION_REFRESH = 'refresh'
 export const GA_ACTION_SHARE = 'share'
+

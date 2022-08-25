@@ -45,29 +45,34 @@ export const SettingsModal = ({
           flag={isHardMode}
           handleFlag={handleHardMode}
           description={HARD_MODE_DESCRIPTION}
+          id="settings-hard-mode"
         />
         <SettingsToggle
           settingName="Expert Mode"
           flag={isExpertMode}
           handleFlag={handleExpertMode}
           description={EXPERT_MODE_DESCRIPTION}
+          id="settings-expert-mode"
         />
         <SettingsToggle
           settingName="Dark Mode"
           flag={isDarkMode}
           handleFlag={handleDarkMode}
+          id="settings-dark-mode"
         />
         <SettingsToggle
           settingName="High Contrast Mode"
           flag={isHighContrastMode}
           handleFlag={handleHighContrastMode}
           description={HIGH_CONTRAST_MODE_DESCRIPTION}
+          id="settings-highcontrast-mode"
         />
         <ButtonToggle
           settingName="Game Mode"
           selected={gameMode}
           flagValues={GAME_MODES}
           handleFlag={handleGameMode}
+          id="settings-game-mode"
         />
 
       </div>

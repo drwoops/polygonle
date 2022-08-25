@@ -5,6 +5,7 @@ type Props = {
   flag: boolean
   handleFlag: Function
   description?: string
+  id: string
 }
 
 export const SettingsToggle = ({
@@ -12,6 +13,7 @@ export const SettingsToggle = ({
   flag,
   handleFlag,
   description,
+  id
 }: Props) => {
   const toggleHolder = classnames(
     'w-14 h-8 flex shrink-0 items-center bg-gray-300 rounded-full p-1 duration-300 ease-in-out cursor-pointer',
@@ -37,7 +39,7 @@ export const SettingsToggle = ({
             </p>
           )}
         </div>
-        <div className={toggleHolder} onClick={() => handleFlag(!flag)}>
+        <div id={id} className={toggleHolder} onClick={() => handleFlag(!flag)}>
           <div className={toggleButton} />
         </div>
       </div>

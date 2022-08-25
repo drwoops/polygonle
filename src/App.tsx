@@ -37,6 +37,9 @@ import {
   GA_ACTION_GUESS,
   GA_ACTION_GAME_FINISH,
   GA_ACTION_REFRESH,
+  ALERT_DATA_SETTING,
+  ALERT_DATA_GAME_END,
+  ALERT_DATA_GUESS,
 } from './constants/strings'
 import {
   MAX_CHALLENGES,
@@ -225,6 +228,7 @@ function App() {
     if (loaded.guesses.length === MAX_CHALLENGES && !gameWasWon) {
       setIsGameLost(true)
       showErrorAlert(CORRECT_WORD_MESSAGE(solution.word), {
+        data: { type: ALERT_DATA_GAME_END },
         persist: true,
       })
     }
@@ -314,7 +318,9 @@ function App() {
 
   const detectHexpertMode = (isHard: boolean, isExpert: boolean) => {
     if (isHard && isExpert) {
-      showSuccessAlert(HEXPERT_MODE_ALERT_MESSAGE)
+      showSuccessAlert(HEXPERT_MODE_ALERT_MESSAGE, {
+        data: { type: ALERT_DATA_SETTING },
+      })
     }
   }
 
@@ -328,7 +334,9 @@ function App() {
       setStoredHardMode(isHard)
       detectHexpertMode(isHard, isExpertMode)
     } else {
-      showErrorAlert(HARD_MODE_ALERT_MESSAGE)
+      showErrorAlert(HARD_MODE_ALERT_MESSAGE, {
+        data: { type: ALERT_DATA_SETTING },
+      })
     }
   }
 
@@ -342,7 +350,9 @@ function App() {
       setStoredExpertMode(isExpert)
       detectHexpertMode(isHardMode, isExpert)
     } else {
-      showErrorAlert(EXPERT_MODE_ALERT_MESSAGE)
+      showErrorAlert(EXPERT_MODE_ALERT_MESSAGE, {
+        data: { type: ALERT_DATA_SETTING },
+      })
     }
   }
 
@@ -378,6 +388,7 @@ function App() {
       const delayMs = REVEAL_TIME_MS * solution.word.length
 
       showSuccessAlert(winMessage, {
+        data: { type: ALERT_DATA_GAME_END },
         delayMs,
         onClose: () => setIsStatsModalOpenGA(true),
       })
@@ -460,6 +471,7 @@ function App() {
       guessGA(false)
       setCurrentRowClass('jiggle')
       return showErrorAlert(NOT_ENOUGH_LETTERS_MESSAGE, {
+        data: { type: ALERT_DATA_GUESS },
         onClose: clearCurrentRowClass,
       })
     }
@@ -468,6 +480,7 @@ function App() {
       guessGA(false)
       setCurrentRowClass('jiggle')
       return showErrorAlert(WORD_NOT_FOUND_MESSAGE, {
+        data: { type: ALERT_DATA_GUESS },
         onClose: clearCurrentRowClass,
       })
     }
@@ -483,6 +496,7 @@ function App() {
         guessGA(false)
         setCurrentRowClass('jiggle')
         return showErrorAlert(firstMissingReveal, {
+          data: { type: ALERT_DATA_GUESS },
           onClose: clearCurrentRowClass,
         })
       }
@@ -500,6 +514,7 @@ function App() {
     ) {
       guessGA(false)
       return showErrorAlert(PATTERN_MUST_MATCH_MESSAGE, {
+        data: { type: ALERT_DATA_GUESS },
         onClose: clearCurrentRowClass,
       })
     }
@@ -533,6 +548,7 @@ function App() {
         setStats(addStatsForCompletedGame(stats, guesses.length + 1))
         setIsGameLost(true)
         showErrorAlert(CORRECT_WORD_MESSAGE(solution.word), {
+          data: { type: ALERT_DATA_GAME_END },
           persist: true,
           delayMs: REVEAL_TIME_MS * solution.word.length + 1,
         })

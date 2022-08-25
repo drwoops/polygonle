@@ -37,6 +37,7 @@ export const Navbar = ({
       <div className="navbar-content px-3">
         <div className="icon-group flex-1 justify-start">
           <InformationCircleIcon
+            id="nav-btn-info"
             className="h-6 w-6 mr-2 scale-up cursor-pointer dark:stroke-white"
             aria-label="info"
             role="button"
@@ -44,6 +45,7 @@ export const Navbar = ({
             onClick={() => setIsInfoModalOpen(true)}
           />
           <HeartIcon
+            id="nav-btn-community"
             className="h-6 w-6 mr-2 scale-up cursor-pointer text-red-500"
             aria-label="community"
             role="button"
@@ -52,8 +54,9 @@ export const Navbar = ({
           />
           {gameMode === GAME_MODE_UNLIMITED && (
             <RefreshIcon
+              id="nav-btn-refresh"
               className="h-6 w-6 mr-2 scale-up cursor-pointer dark:stroke-white"
-              aria-label="info"
+              aria-label="refresh"
               role="button"
               tabIndex={0}
               onClick={onRefresh}
@@ -68,6 +71,7 @@ export const Navbar = ({
         </div>
         <div className="icon-group flex-1 justify-end">
           <ChartBarIcon
+            id="nav-btn-stats"
             className="h-6 w-6 mr-3 scale-up cursor-pointer dark:stroke-white"
             aria-label="stats"
             role="button"
@@ -75,6 +79,7 @@ export const Navbar = ({
             onClick={() => setIsStatsModalOpen(true)}
           />
           <CogIcon
+            id="nav-btn-settings"
             className="h-6 w-6 scale-up cursor-pointer dark:stroke-white"
             aria-label="settings"
             role="button"

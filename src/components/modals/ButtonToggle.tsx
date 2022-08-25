@@ -3,6 +3,7 @@ type Props = {
   selected: string
   flagValues: string[]
   handleFlag: Function
+  id: string
 }
 
 export const ButtonToggle = ({
@@ -10,6 +11,7 @@ export const ButtonToggle = ({
   selected,
   flagValues,
   handleFlag,
+  id,
 }: Props) => {
   const flagsWithSelected = flagValues.map((flag: string) => {return {isSelected: flag === selected, flag}})
   return (
@@ -17,7 +19,7 @@ export const ButtonToggle = ({
         <div className="text-gray-500 dark:text-gray-300 mt-2 text-left">
           <p className="leading-none">{settingName}</p>
         </div>
-        <div className="inline-flex shadow-md hover:shadow-lg focus:shadow-lg" role="group">
+        <div id={id} className="inline-flex shadow-md hover:shadow-lg focus:shadow-lg" role="group">
           {flagsWithSelected.map(({flag, isSelected}: {flag: string, isSelected: boolean}) => (
             <button onClick={() => !isSelected && handleFlag(flag)} type="button" key={flag}
               aria-current={isSelected}

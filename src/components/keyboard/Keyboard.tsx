@@ -24,12 +24,6 @@ export const Keyboard = ({
   const charStatuses = getStatuses(solution, guesses)
   const keyboardRef = useRef<HTMLDivElement>(null);
 
-  const focusKeyboard = () => {
-    //temp noop will revisit later
-    //if(!keyboardRef.current) return;
-    //keyboardRef.current.focus();
-  };
-
   const onClick = (value: string) => {
     if (value === 'ENTER') {
       onEnter()
@@ -38,7 +32,6 @@ export const Keyboard = ({
     } else {
       onChar(value)
     }
-    focusKeyboard();
   }
 
   useEffect(() => {
@@ -54,14 +47,10 @@ export const Keyboard = ({
       } else if (isKeypress){
         onChar(key)
       }
-
-      if(isEnter || isBackspace || isKeypress) {
-        focusKeyboard();
-      }
     }
-    window.addEventListener('keyup', listener)
+    window.addEventListener('keydown', listener)
     return () => {
-      window.removeEventListener('keyup', listener)
+      window.removeEventListener('keydown', listener)
     }
   }, [onEnter, onDelete, onChar])
 
