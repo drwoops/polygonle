@@ -86,6 +86,7 @@ export const StatsModal = ({
     const classNames = "inline-flex justify-center items-center text-center w-full rounded-md border border-transparent shadow-sm px-4 py-4 bg-indigo-600 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:text-sm row-span-1"
     if (gameMode === GAME_MODE_UNLIMITED) {
       return (<button
+        id="stats-next-puzzle"
         type="button"
         className={classNames}
         onClick={onNextPuzzle}>
@@ -144,6 +145,7 @@ export const StatsModal = ({
             </div>
           </div>
             <button
+              id="stats-share"
               type="button"
               className="inline-flex justify-center items-center text-center w-full rounded-md border border-transparent shadow-sm px-4 py-2 bg-indigo-600 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:text-sm row-span-1"
               onClick={share}>
