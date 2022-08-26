@@ -3,8 +3,8 @@ import {
   CogIcon,
   InformationCircleIcon,
   RefreshIcon,
+  HeartIcon,
 } from '@heroicons/react/outline'
-import { HeartIcon } from '@heroicons/react/solid'
 import { GAME_TITLE, GAME_MODE_DAILY, GAME_MODE_UNLIMITED} from '../../constants/strings'
 
 type Props = {
