@@ -9,6 +9,40 @@ const parser = new UAParser()
 const browser = parser.getBrowser()
 const device = parser.getDevice()
 
+export const getShareText = (
+  solution: Solution,
+  guesses: string[],
+  lost: boolean,
+  isHardMode: boolean,
+  isExpertMode: boolean,
+  isDarkMode: boolean,
+  isHighContrastMode: boolean,
+  gameMode: string,
+  shareUrl: string
+): string => {
+  let modesSymbol = '';
+  if(isHardMode && isExpertMode) {
+    modesSymbol = '⬢'; // hexpert mode
+  } else if (isHardMode) {
+    modesSymbol = '■';
+  } else if (isExpertMode) {
+    modesSymbol = '◆';
+  }
+  const problemNumber = gameMode === GAME_MODE_UNLIMITED ? '∞' : solution.index
+
+  return `#${GAME_TITLE} ${problemNumber} ${
+      lost ? 'X' : guesses.length
+    }/${MAX_CHALLENGES}${modesSymbol}\n\n` +
+    `${shareUrl}\n`
+    +
+    `${solution.puzzle.map((s: Shape) => s.shape).join('')}\n` + 
+    generateEmojiGrid(
+      solution.word,
+      guesses,
+      getEmojiTiles(isDarkMode, isExpertMode, isHighContrastMode)
+    )
+}
+
 export const shareStatus = (
   solution: Solution,
   guesses: string[],
@@ -22,30 +56,9 @@ export const shareStatus = (
   handleShareFailure: () => void,
   shareUrl: string
 ) => {
-  let modesSymbol = '';
-  if(isHardMode && isExpertMode) {
-    modesSymbol = '⬢'; // hexpert mode
-  } else if (isHardMode) {
-    modesSymbol = '■';
-  } else if (isExpertMode) {
-    modesSymbol = '◆';
-  }
-  const problemNumber = gameMode === GAME_MODE_UNLIMITED ? '∞' : solution.index
 
-  const textToShare =
-    `#${GAME_TITLE} ${problemNumber} ${
-      lost ? 'X' : guesses.length
-    }/${MAX_CHALLENGES}${modesSymbol}\n\n` +
-    `${shareUrl}\n`
-    +
-    `${solution.puzzle.map((s: Shape) => s.shape).join('')}\n` + 
-    generateEmojiGrid(
-      solution.word,
-      guesses,
-      getEmojiTiles(isDarkMode, isExpertMode, isHighContrastMode)
-    )
-
-  const shareData = { text: textToShare }
+  const textToShare = getShareText(solution, guesses, lost, isHardMode, isExpertMode, isDarkMode, isHighContrastMode, gameMode, shareUrl) 
+  const shareData = {text: textToShare}
 
   let shareSuccess = false
 

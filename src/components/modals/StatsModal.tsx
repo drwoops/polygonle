@@ -3,7 +3,7 @@ import { ShareIcon, RefreshIcon } from '@heroicons/react/outline'
 import { StatBar } from '../stats/StatBar'
 import { Histogram } from '../stats/Histogram'
 import { GameStats } from '../../lib/localStorage'
-import { shareStatus } from '../../lib/share'
+import { shareStatus, getShareText } from '../../lib/share'
 import { getTomorrow, Solution } from '../../lib/words'
 import { BaseModal } from './BaseModal'
 import {
@@ -82,6 +82,19 @@ export const StatsModal = ({
                   handleShareFailure,
                   shareUrl
                 )}
+
+
+  const shareText = getShareText(
+                  solution,
+                  guesses,
+                  isGameLost,
+                  isHardMode,
+                  isExpertMode,
+                  isDarkMode,
+                  isHighContrastMode,
+                  gameMode,
+                  shareUrl
+                )
   const unlimitedButton = () => {
     const classNames = "inline-flex justify-center items-center text-center w-full rounded-md border border-transparent shadow-sm px-4 py-4 bg-indigo-600 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:text-sm row-span-1"
     if (gameMode === GAME_MODE_UNLIMITED) {
@@ -148,6 +161,7 @@ export const StatsModal = ({
               id="stats-share"
               type="button"
               className="inline-flex justify-center items-center text-center w-full rounded-md border border-transparent shadow-sm px-4 py-2 bg-indigo-600 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:text-sm row-span-1"
+              data-share-text={shareText}
               onClick={share}>
               <ShareIcon className="h-6 w-6 mr-2 cursor-pointer dark:stroke-white scale-up" />
               {SHARE_TEXT}
