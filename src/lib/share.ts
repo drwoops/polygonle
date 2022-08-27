@@ -9,6 +9,24 @@ const parser = new UAParser()
 const browser = parser.getBrowser()
 const device = parser.getDevice()
 
+// Spaces: https://jkorpela.fi/chars/spaces.html 
+const forceUnicode = (c: string) => {
+  return c + '\uFE0E' // VARIATION SELECTOR-15
+}
+
+const spacedUnicodePuzzle = (puzzle: Shape[]) => {
+  return puzzle.map((s: Shape) => {
+    let shape = forceUnicode(s.shape)
+    if(s.shape === '⬢') {
+      return `\u2004${shape}\u2004`
+    }
+    if(s.shape === '◼') {
+      return `\u2006\u2005${shape}\u2005`
+    }
+    return `\u2005${shape}\u2005` // Pad with Four-per-em space 
+  }).join('')
+}
+
 export const getShareText = (
   solution: Solution,
   guesses: string[],
@@ -32,10 +50,10 @@ export const getShareText = (
 
   return `#${GAME_TITLE} ${problemNumber} ${
       lost ? 'X' : guesses.length
-    }/${MAX_CHALLENGES}${modesSymbol}\n\n` +
+    }/${MAX_CHALLENGES}${forceUnicode(modesSymbol)}\n\n` +
     `${shareUrl}\n`
     +
-    `${solution.puzzle.map((s: Shape) => s.shape).join('')}\n` + 
+    `${spacedUnicodePuzzle(solution.puzzle)}\n` + 
     generateEmojiGrid(
       solution.word,
       guesses,
