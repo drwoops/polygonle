@@ -25,7 +25,7 @@ export const Cell = ({
   const ariaLabel = !status ? 'empty cell' : `letter "${value}" is ${status}`;
 
   const classes = classnames(
-    'w-14 h-14 border-solid border-2 flex items-center justify-center mx-0.5 text-3xl font-bold rounded dark:text-white',
+    'cell w-14 h-14 border-solid border-2 flex items-center justify-center mx-0.5 text-3xl font-bold rounded dark:text-white',
     {
       'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-600':
         !status,
