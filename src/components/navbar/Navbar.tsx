@@ -46,7 +46,7 @@ export const Navbar = ({
           />
           <HeartIcon
             id="nav-btn-community"
-            className="h-6 w-6 mr-2 scale-up cursor-pointer text-red-500"
+            className="h-6 w-6 mr-2 scale-up cursor-pointer dark:stroke-white"
             aria-label="community"
             role="button"
             tabIndex={0}
