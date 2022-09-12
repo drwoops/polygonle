@@ -138,6 +138,10 @@ export const getWordOfDay = (index: number) => {
 }
 
 export const getPuzzle = (solution: string, seed=solution) => {
+  if(seed !== solution) {
+    seed = seed + solution // shuffle color order on unlimited
+  }
+  console.log(`seed = ${seed}`)
   let colors = [
     new Color("#CF2B52", "red"),
     new Color("#FD8C44", "orange"),
@@ -146,7 +150,10 @@ export const getPuzzle = (solution: string, seed=solution) => {
     new Color("#296094", "blue"), 
     new Color("#3F1F56", "magenta")
   ]
-  colors = shuffleSeed.shuffle(colors, seed); // seed with solution for stability
+  // seed with solution for stability
+  // but modify seed so there is no relationship between color and shape ordering
+  colors = shuffleSeed.shuffle(colors, seed + "1"); 
+  console.log(`shuffled ${JSON.stringify(colors)}`)
 
   let shapes = [
     new Shape('⬢', 'hexagon'),
@@ -158,6 +165,7 @@ export const getPuzzle = (solution: string, seed=solution) => {
     new Shape('◥', 'upper-right triangle')
   ]
   shapes = shuffleSeed.shuffle(shapes, seed); // seed with solution for stability
+  console.log(`shapes ${JSON.stringify(shapes)}`)
   const chars = Array.from(new Set(solution))
   const char2Shape = new Map()
   for(let i = 0; i < chars.length; i++) {
