@@ -43,6 +43,7 @@ export const WORDS = [
 "alleges",
 "overcome",
 "sunburn",
+"squares",
 "pinning",
 "missile",
 "preorder",

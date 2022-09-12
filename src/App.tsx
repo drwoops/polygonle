@@ -586,6 +586,26 @@ function App() {
           guesses={guesses}
           isRevealing={isRevealing}
         />
+
+        {solution.index === 44 && (
+          <div
+            className="font-medium text-gray-900 dark:text-gray-100 p-2
+        flex justify-center pt-4 items-center "
+          >
+            <p className="text-center">
+              Today's puzzle is a crossover with &nbsp;
+              <a
+                href="https://squaredle.app/?r=polygonle"
+                target="_blank"
+                className="text-indigo-700 dark:text-indigo-400 font-bold"
+              >
+                Squaredle
+              </a>{' '}
+              &nbsp;- A cunning word finding game which puts your vocabulary to
+              the test!
+            </p>
+          </div>
+        )}
         <div className="flex justify-center pt-4 items-center">
           <a
             href="https://discord.gg/TrVJMwzjKc"

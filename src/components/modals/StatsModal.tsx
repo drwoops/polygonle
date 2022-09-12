@@ -116,6 +116,40 @@ export const StatsModal = ({
     </button>)
   }
 
+  const solvedStats = () => {
+    return (
+        <>
+        {solution.index === 44 && 
+          (<div className="font-medium text-gray-900 dark:text-gray-100 text-left p-2">
+            <p>You've found the word "squares", now go play with a square of words! <a href="https://squaredle.app/?r=polygonle" target="_blank" className="text-indigo-700 dark:text-indigo-400 font-bold">Squaredle</a> is a daily word-finding game that builds your vocabulary.</p>
+         </div>)
+        }
+        <div className="grid grid-rows-2 grid-flow-col gap-2 dark:text-white">
+          <div className="row-span-2 flex justify-center">
+            <div className="self-center">
+              <h5>{NEW_WORD_TEXT}</h5>
+              <Countdown
+                className="text-lg font-medium text-gray-900 dark:text-gray-100"
+                date={tomorrow}
+                daysInHours={true}
+              />
+            </div>
+          </div>
+            <button
+              id="stats-share"
+              type="button"
+              className="inline-flex justify-center items-center text-center w-full rounded-md border border-transparent shadow-sm px-4 py-2 bg-indigo-600 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:text-sm row-span-1"
+              data-share-text={shareText}
+              onClick={share}>
+              <ShareIcon className="h-6 w-6 mr-2 cursor-pointer dark:stroke-white scale-up" />
+              {SHARE_TEXT}
+            </button>
+            {unlimitedButton()}
+        </div>
+        </>
+    )
+  }
+
   if (gameStats.totalGames <= 0) {
     return (
       <BaseModal
@@ -145,30 +179,7 @@ export const StatsModal = ({
         isGameWon={isGameWon}
         numberOfGuessesMade={numberOfGuessesMade}
       />
-      {(isGameLost || isGameWon) && (
-        <div className="grid grid-rows-2 grid-flow-col gap-2 dark:text-white">
-          <div className="row-span-2 flex justify-center">
-            <div className="self-center">
-              <h5>{NEW_WORD_TEXT}</h5>
-              <Countdown
-                className="text-lg font-medium text-gray-900 dark:text-gray-100"
-                date={tomorrow}
-                daysInHours={true}
-              />
-            </div>
-          </div>
-            <button
-              id="stats-share"
-              type="button"
-              className="inline-flex justify-center items-center text-center w-full rounded-md border border-transparent shadow-sm px-4 py-2 bg-indigo-600 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:text-sm row-span-1"
-              data-share-text={shareText}
-              onClick={share}>
-              <ShareIcon className="h-6 w-6 mr-2 cursor-pointer dark:stroke-white scale-up" />
-              {SHARE_TEXT}
-            </button>
-            {unlimitedButton()}
-        </div>
-      )}
+      {(isGameLost || isGameWon) && solvedStats()}
       {ENABLE_MIGRATE_STATS && (
         <div>
           <hr className="mt-4 -mb-4 border-gray-500" />
