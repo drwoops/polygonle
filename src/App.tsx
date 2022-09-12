@@ -52,8 +52,7 @@ import {
   findFirstUnusedReveal,
   getDailySolution,
   getUnlimitedPuzzleId,
-  getPattern,
-  getPuzzle,
+  isSamePattern,
   getSolutionFromPuzzleId,
   getToday,
   isWordInWordList,
@@ -503,15 +502,7 @@ function App() {
     }
 
     // enforce expert mode - all guesses must follow the pattern of the solution
-    if (
-      isExpertMode &&
-      getPattern(
-        getPuzzle(
-          currentGuess,
-          /* seed to compare patterns */ seed ?? solution.word
-        )
-      ) !== getPattern(solution.puzzle)
-    ) {
+    if (isExpertMode && !isSamePattern(currentGuess, solution.word)) {
       guessGA(false)
       return showErrorAlert(PATTERN_MUST_MATCH_MESSAGE, {
         data: { type: ALERT_DATA_GUESS },

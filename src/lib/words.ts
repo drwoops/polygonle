@@ -157,8 +157,23 @@ export const getPuzzle = (solution: string, seed=solution) => {
   return Array.from(solution).map((c: String) => char2Shape.get(c))
 }
 
-export const getPattern = (puzzle: Shape[]) => {
-  return puzzle.map((p) => p.shape).join('')
+// Transforms a word into its fundamental pattern SWELLS -> ABCDDA
+const getPattern = (word: string) => {
+  const replacementMap = new Map()
+  const out: string[] = []
+  let replacement = "A"
+  for(const c of word) {
+    if(!replacementMap.has(c)) {
+      replacementMap.set(c, replacement)
+      replacement = String.fromCharCode(replacement.charCodeAt(0) + 1)
+    }
+    out.push(replacementMap.get(c))
+  }
+  return out.join('')
+}
+
+export const isSamePattern = (a: string, b: string) => {
+  return getPattern(a) === getPattern(b)
 }
 
 export const getDailySolution = (today: Date) => {
