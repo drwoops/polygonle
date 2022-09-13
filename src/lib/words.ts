@@ -5,16 +5,7 @@ import { getGuessStatuses } from './statuses'
 import { default as GraphemeSplitter } from 'grapheme-splitter'
 import * as shuffleSeed from 'shuffle-seed';
 import jsSHA from 'jssha/dist/sha3';
-
-export class Color {
-  constructor(readonly hex: string, readonly label: string){}
-}
-
-export class Shape {
-  color?: Color;
-
-  constructor(readonly shape: string, readonly label: string){}
-}
+import {Shape, Color, ALL_SHAPES} from './shapes'
 
 export class Solution {
   constructor(readonly word: string, readonly puzzle: Shape[], readonly index: number){}
@@ -141,7 +132,6 @@ export const getPuzzle = (solution: string, seed=solution) => {
   if(seed !== solution) {
     seed = seed + solution // shuffle color order on unlimited
   }
-  console.log(`seed = ${seed}`)
   let colors = [
     new Color("#CF2B52", "red"),
     new Color("#FD8C44", "orange"),
@@ -153,19 +143,9 @@ export const getPuzzle = (solution: string, seed=solution) => {
   // seed with solution for stability
   // but modify seed so there is no relationship between color and shape ordering
   colors = shuffleSeed.shuffle(colors, seed + "1"); 
-  console.log(`shuffled ${JSON.stringify(colors)}`)
-
-  let shapes = [
-    new Shape('⬢', 'hexagon'),
-    new Shape('◼', 'square'),
-    new Shape('◆', 'diamond'),
-    new Shape('◢', 'bottom-right triangle'),
-    new Shape('◣', 'bottom-left triangle'),
-    new Shape('◤', 'upper-left triangle'),
-    new Shape('◥', 'upper-right triangle')
-  ]
-  shapes = shuffleSeed.shuffle(shapes, seed); // seed with solution for stability
-  console.log(`shapes ${JSON.stringify(shapes)}`)
+  
+  const shapesCopy = ALL_SHAPES.map((s: Shape) => s.clone()); // deep copy shapes
+  const shapes = shuffleSeed.shuffle(shapesCopy, seed); // seed with solution for stability
   const chars = Array.from(new Set(solution))
   const char2Shape = new Map()
   for(let i = 0; i < chars.length; i++) {

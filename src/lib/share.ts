@@ -1,5 +1,6 @@
 import { getGuessStatuses } from './statuses'
-import { unicodeSplit, Shape, Solution } from './words'
+import { unicodeSplit, Solution } from './words'
+import { Shape } from './shapes'
 import { GAME_TITLE, GAME_MODE_UNLIMITED } from '../constants/strings'
 import { MAX_CHALLENGES } from '../constants/settings'
 import { UAParser } from 'ua-parser-js'

@@ -1,4 +1,4 @@
-import {Shape as ShapeData} from '../../lib/words'
+import {Shape as ShapeData} from '../../lib/shapes'
 import {Shape} from './Shape'
 
 type Props = {
