@@ -596,6 +596,7 @@ function App() {
               Today's puzzle is a crossover with &nbsp;
               <a
                 href="https://squaredle.app/?r=polygonle"
+                rel="noreferrer"
                 target="_blank"
                 className="text-indigo-700 dark:text-indigo-400 font-bold"
               >

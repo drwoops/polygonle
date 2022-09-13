@@ -121,7 +121,7 @@ export const StatsModal = ({
         <>
         {solution.index === 44 && 
           (<div className="font-medium text-gray-900 dark:text-gray-100 text-left p-2">
-            <p>You've found the word "squares", now go play with a square of words! <a href="https://squaredle.app/?r=polygonle" target="_blank" className="text-indigo-700 dark:text-indigo-400 font-bold">Squaredle</a> is a daily word-finding game that builds your vocabulary.</p>
+            <p>You've found the word "squares", now go play with a square of words! <a href="https://squaredle.app/?r=polygonle" target="_blank" rel="noreferrer" className="text-indigo-700 dark:text-indigo-400 font-bold">Squaredle</a> is a daily word-finding game that builds your vocabulary.</p>
          </div>)
         }
         <div className="grid grid-rows-2 grid-flow-col gap-2 dark:text-white">
