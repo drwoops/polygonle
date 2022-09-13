@@ -100,6 +100,7 @@ function App() {
   const [isSupportModalOpen, setIsSupportModalOpen] = useState(false)
   const [isMigrateStatsModalOpen, setIsMigrateStatsModalOpen] = useState(false)
   const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false)
+  const [selectedCellIndex, setSelectedCellIndex] = useState(0)
 
   const modalOpenWrapper = (
     setter: (setting: boolean) => void,
@@ -412,7 +413,10 @@ function App() {
       guesses.length < MAX_CHALLENGES &&
       !isGameWon
     ) {
-      setCurrentGuess(`${currentGuess}${value}`)
+      const guess = currentGuess.slice() // copy
+      // TODO handle case where we are just appending to our guess
+      guess[selectedCellIndex] = value
+      setCurrentGuess(guess)
     }
   }
 
@@ -459,6 +463,10 @@ function App() {
       action: GA_ACTION_GAME_FINISH,
       value: +won,
     })
+  }
+
+  const onSelectCell = (index: number) => {
+    setSelectedCellIndex(index)
   }
 
   const onEnter = () => {
@@ -567,6 +575,7 @@ function App() {
             currentGuess={currentGuess}
             isRevealing={isRevealing}
             currentRowClassName={currentRowClass}
+            onSelectCell={onSelectCell}
           />
         </div>
         <Keyboard

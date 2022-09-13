@@ -5,7 +5,7 @@ import { ENTER_TEXT, DELETE_TEXT } from '../../constants/strings'
 import { localeAwareUpperCase } from '../../lib/words'
 
 type Props = {
-  onChar: (value: string) => void
+  onChar: (value: string, position?: number) => void
   onDelete: () => void
   onEnter: () => void
   solution: string
@@ -45,6 +45,7 @@ export const Keyboard = ({
       } else if (isBackspace) {
         onDelete()
       } else if (isKeypress){
+        // determine which position is focused
         onChar(key)
       }
     }

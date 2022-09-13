@@ -9,6 +9,7 @@ type Props = {
   isRevealing?: boolean
   isCompleted?: boolean
   position?: number
+  onClick?: (event: React.MouseEvent<HTMLElement>) => void
 }
 
 export const Cell = ({
@@ -17,6 +18,7 @@ export const Cell = ({
   isRevealing,
   isCompleted,
   position = 0,
+  onClick,
 }: Props) => {
   const isFilled = value && !isCompleted
   const shouldReveal = isRevealing && isCompleted
@@ -25,7 +27,7 @@ export const Cell = ({
   const ariaLabel = !status ? 'empty cell' : `letter "${value}" is ${status}`;
 
   const classes = classnames(
-    'cell w-14 h-14 border-solid border-2 flex items-center justify-center mx-0.5 text-3xl font-bold rounded dark:text-white',
+    'cell w-14 h-14 border-solid border-2 flex items-center justify-center mx-0.5 text-3xl font-bold rounded dark:text-white focus:border-4 focus:border-indigo-400 dark:focus:border-indigo-400',
     {
       'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-600':
         !status,
@@ -46,7 +48,7 @@ export const Cell = ({
   )
 
   return (
-    <div className={classes} style={{ animationDelay }} tabIndex={0} role="listitem" aria-label={ariaLabel}>
+    <div onClick={onClick} className={classes} style={{ animationDelay }} tabIndex={0} role="listitem" aria-label={ariaLabel} data-position={position}>
       <div className="letter-container" style={{ animationDelay }}>
         {value}
       </div>

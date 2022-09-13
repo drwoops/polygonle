@@ -3,8 +3,8 @@ module.exports = {
   darkMode: 'class',
  	theme: {
     extend: {
-      brightness: {
-        175: '1.75',
+      borderWidth: {
+        '3': '3px',
       }
     }
   },
