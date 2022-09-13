@@ -16,7 +16,7 @@ export abstract class Shape {
   abstract clone(): Shape;
 
   textOverlay(): JSX.Element {
-    return <text x="50%" y="50%" textAnchor="middle" alignmentBaseline="central" dominantBaseline="central" fontSize="12rem" fillOpacity="0">{this.shape}</text>
+    return <text x="50%" y="50%" textAnchor="middle" alignmentBaseline="central" dominantBaseline="central" fontSize="9rem" fillOpacity="0">{this.shape}</text>
   }
 }
 
@@ -112,7 +112,7 @@ class URTriangle extends Shape {
   }
 
   render({height, width, fill}: Props) {
-    return (<svg width={width} height={height} viewBox="0 0 59.8 59.8" xmlns="http://www.w3.org/2000/svg"><g id="svgGroup" strokeLinecap="round" fillRule="evenodd" fontSize="9pt" stroke="#000" strokeWidth="0.25mm" fill={fill} style={{"stroke":fill,"strokeWidth":"0.25mm","fill":fill}}><path d="M 59.8 0 L 59.8 59.8 L 0 0 L 59.8 0 Z" vectorEffect="non-scaling-stroke"/></g></svg>)
+    return (<svg width={width} height={height} viewBox="0 0 59.8 59.8" xmlns="http://www.w3.org/2000/svg"><g id="svgGroup" strokeLinecap="round" fillRule="evenodd" fontSize="9pt" stroke={fill} strokeWidth="0.25mm" fill={fill} style={{"stroke":fill,"strokeWidth":"0.25mm","fill":fill}}><path d="M 59.8 0 L 59.8 59.8 L 0 0 L 59.8 0 Z" vectorEffect="non-scaling-stroke"/></g>{this.textOverlay()}</svg>)
   }
 
   clone() {
