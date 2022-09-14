@@ -31,7 +31,9 @@ export const Cell = ({
         !status,
       'border-black dark:border-slate-100': value && !status,
       'absent bg-slate-400 dark:bg-slate-700 text-white border-slate-400 dark:border-slate-700':
-        status === 'absent',
+        status === 'absent' && !isHighContrast,
+      'absent bg-slate-200 dark:bg-slate-700 text-slate-700 border-slate-200 dark:border-slate-700':
+        status === 'absent' && isHighContrast,
       'correct bg-orange-500 text-white border-orange-500':
         status === 'correct' && isHighContrast,
       'present bg-cyan-500 text-white border-cyan-500':
