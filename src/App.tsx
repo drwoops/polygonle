@@ -407,16 +407,28 @@ function App() {
     setIsStatsModalOpenGA,
   ])
 
+  const setCurrentGuessChar = (c: string, index: number) => {
+    console.log(`c: ${c} index: ${index}`)
+    let chars = new GraphemeSplitter().splitGraphemes(currentGuess)
+    if (index > chars.length - 1) {
+      const padding = Array(index - (chars.length - 1)).fill(' ')
+      chars = chars.concat(padding)
+    }
+
+    console.log(`chars: ${JSON.stringify(chars)}`)
+    chars[index] = c
+    setCurrentGuess(chars.join(''))
+  }
+
   const onChar = (value: string) => {
+    // TODO update conditional
+    // TODO distinguish appending case vs. selected case
     if (
       unicodeLength(`${currentGuess}${value}`) <= solution.word.length &&
       guesses.length < MAX_CHALLENGES &&
       !isGameWon
     ) {
-      const guess = currentGuess.slice() // copy
-      // TODO handle case where we are just appending to our guess
-      guess[selectedCellIndex] = value
-      setCurrentGuess(guess)
+      setCurrentGuessChar(value, selectedCellIndex)
     }
   }
 
@@ -466,6 +478,7 @@ function App() {
   }
 
   const onSelectCell = (index: number) => {
+    console.log(`onSelectCell: ${index}`)
     setSelectedCellIndex(index)
   }
 
@@ -576,6 +589,7 @@ function App() {
             isRevealing={isRevealing}
             currentRowClassName={currentRowClass}
             onSelectCell={onSelectCell}
+            selectedCellIndex={selectedCellIndex}
           />
         </div>
         <Keyboard

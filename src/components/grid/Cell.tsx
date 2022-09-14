@@ -9,6 +9,7 @@ type Props = {
   isRevealing?: boolean
   isCompleted?: boolean
   position?: number
+  active?: boolean
   onClick?: (event: React.MouseEvent<HTMLElement>) => void
 }
 
@@ -19,6 +20,7 @@ export const Cell = ({
   isCompleted,
   position = 0,
   onClick,
+  autofocus
 }: Props) => {
   const isFilled = value && !isCompleted
   const shouldReveal = isRevealing && isCompleted
@@ -48,7 +50,7 @@ export const Cell = ({
   )
 
   return (
-    <div onClick={onClick} className={classes} style={{ animationDelay }} tabIndex={0} role="listitem" aria-label={ariaLabel} data-position={position}>
+    <div autofocus={autofocus} onClick={onClick} className={classes} style={{ animationDelay }} tabIndex={0} role="listitem" aria-label={ariaLabel} data-position={position}>
       <div className="letter-container" style={{ animationDelay }}>
         {value}
       </div>
