@@ -13,7 +13,7 @@ export const CurrentRow = ({ guess, className, solution, onSelectCell, selectedC
   const splitGuess = unicodeSplit(guess)
   const classes = `flex justify-center mb-1 ${className}`
 
-  const onClick = (event: React.MouseEvent<HTMLElement>) => {
+  const onClick = (event: React.SyntheticEvent<HTMLElement>) => {
     const position = Number(event.currentTarget.dataset.position);
     onSelectCell(position);
   }

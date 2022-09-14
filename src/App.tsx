@@ -415,17 +415,14 @@ function App() {
       chars = chars.concat(padding)
     }
 
-    console.log(`chars: ${JSON.stringify(chars)}`)
     chars[index] = c
     setCurrentGuess(chars.join(''))
     setSelectedCellIndex(index + 1)
   }
 
   const onChar = (value: string) => {
-    // TODO update conditional
-    // TODO distinguish appending case vs. selected case
     if (
-      unicodeLength(`${currentGuess}${value}`) <= solution.word.length &&
+      selectedCellIndex < solution.word.length &&
       guesses.length < MAX_CHALLENGES &&
       !isGameWon
     ) {
@@ -434,9 +431,15 @@ function App() {
   }
 
   const onDelete = () => {
-    setCurrentGuess(
-      new GraphemeSplitter().splitGraphemes(currentGuess).slice(0, -1).join('')
-    )
+    if (selectedCellIndex > 0) {
+      setCurrentGuess(
+        new GraphemeSplitter()
+          .splitGraphemes(currentGuess)
+          .slice(0, -1)
+          .join('')
+      )
+      setSelectedCellIndex(selectedCellIndex - 1)
+    }
   }
 
   const onRefresh = () => {
@@ -478,8 +481,8 @@ function App() {
     })
   }
 
+  // TODO: Trigger on focus change via other methods (tab, arrow keys)
   const onSelectCell = (index: number) => {
-    console.log(`onSelectCell: ${index}`)
     setSelectedCellIndex(index)
   }
 
@@ -488,7 +491,10 @@ function App() {
       return
     }
 
-    if (!(unicodeLength(currentGuess) === solution.word.length)) {
+    if (
+      !currentGuess.includes(' ') &&
+      !(unicodeLength(currentGuess) === solution.word.length)
+    ) {
       guessGA(false)
       setCurrentRowClass('jiggle')
       return showErrorAlert(NOT_ENOUGH_LETTERS_MESSAGE, {
