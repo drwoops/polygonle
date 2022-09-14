@@ -1,6 +1,6 @@
 import { getStatuses } from '../../lib/statuses'
 import { Key } from './Key'
-import { useEffect, useRef } from 'react'
+import { useEffect } from 'react'
 import { ENTER_TEXT, DELETE_TEXT } from '../../constants/strings'
 import { localeAwareUpperCase } from '../../lib/words'
 
@@ -22,7 +22,6 @@ export const Keyboard = ({
   isRevealing,
 }: Props) => {
   const charStatuses = getStatuses(solution, guesses)
-  const keyboardRef = useRef<HTMLDivElement>(null);
 
   const onClick = (value: string) => {
     if (value === 'ENTER') {
@@ -56,7 +55,7 @@ export const Keyboard = ({
   }, [onEnter, onDelete, onChar])
 
   return (
-    <div ref={keyboardRef} aria-label="keyboard" role="list" tabIndex={0}>
+    <div aria-label="keyboard" role="list" tabIndex={0}>
       <div className="flex justify-center mb-1">
         {['Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P'].map((key) => (
           <Key

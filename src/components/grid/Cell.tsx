@@ -1,4 +1,5 @@
 import { CharStatus } from '../../lib/statuses'
+import { useEffect, useRef } from 'react'
 import classnames from 'classnames'
 import { REVEAL_TIME_MS } from '../../constants/settings'
 import { getStoredIsHighContrastMode } from '../../lib/localStorage'
@@ -10,6 +11,7 @@ type Props = {
   isCompleted?: boolean
   position?: number
   active?: boolean
+  focusable?: boolean
   onClick?: (event: React.MouseEvent<HTMLElement>) => void
 }
 
@@ -20,8 +22,11 @@ export const Cell = ({
   isCompleted,
   position = 0,
   onClick,
-  autofocus
+  active,
+  focusable = false,
 }: Props) => {
+
+  const cellRef = useRef<HTMLDivElement>(null);
   const isFilled = value && !isCompleted
   const shouldReveal = isRevealing && isCompleted
   const animationDelay = `${position * REVEAL_TIME_MS}ms`
@@ -49,8 +54,15 @@ export const Cell = ({
     }
   )
 
+  useEffect(() => {
+    if(active) {
+      cellRef.current?.focus()
+    }
+  }, [active])
+
   return (
-    <div autofocus={autofocus} onClick={onClick} className={classes} style={{ animationDelay }} tabIndex={0} role="listitem" aria-label={ariaLabel} data-position={position}>
+    <div ref={cellRef} 
+      onClick={onClick} className={classes} style={{ animationDelay }} tabIndex={focusable ? 0 : -1} role="listitem" aria-label={ariaLabel} data-position={position}>
       <div className="letter-container" style={{ animationDelay }}>
         {value}
       </div>

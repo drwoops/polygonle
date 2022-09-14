@@ -418,6 +418,7 @@ function App() {
     console.log(`chars: ${JSON.stringify(chars)}`)
     chars[index] = c
     setCurrentGuess(chars.join(''))
+    setSelectedCellIndex(index + 1)
   }
 
   const onChar = (value: string) => {

@@ -22,7 +22,7 @@ export const CurrentRow = ({ guess, className, solution, onSelectCell, selectedC
   return (
     <div className={classes} role="list" aria-label="current row">
       {[...Array(solution.length)].map((x, i)=>  {
-        return <Cell autofocus={selectedCellIndex === i} onClick={onClick} key={i} value={splitGuess[i]} position={i} />
+        return <Cell active={selectedCellIndex === i} onClick={onClick} key={i} value={splitGuess[i]} position={i} focusable={true} />
       })}
     </div>
   )
