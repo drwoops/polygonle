@@ -480,11 +480,12 @@ function App() {
       }
       finalIndex = index + 1 // final cursor position after exiting loop
     }
+    finalIndex = finalIndex >= 0 ? finalIndex : 0 // don't return negative indicies
     return { guess: chars.join(''), index: finalIndex }
   }
 
   const onDelete = () => {
-    if (selectedCellIndex > 0) {
+    if (selectedCellIndex >= 0) {
       const { guess, index } = deleteCharAndSpaces(
         currentGuess,
         selectedCellIndex
