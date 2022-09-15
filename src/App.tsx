@@ -579,6 +579,7 @@ function App() {
     ) {
       setGuesses([...guesses, currentGuess])
       setCurrentGuess('')
+      setSelectedCellIndex(0)
 
       if (winningWord) {
         gameFinishGA(true)
