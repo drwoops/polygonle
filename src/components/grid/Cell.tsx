@@ -56,7 +56,8 @@ export const Cell = ({
 
   useEffect(() => {
     if(active) {
-      var x = window.scrollX, y = window.scrollY;
+      const x = window.scrollX;
+      const y = window.scrollY;
       cellRef.current?.focus()
       window.scrollTo(x, y); // focus without scrolling
     } else {
