@@ -17,7 +17,6 @@ export const CurrentRow = ({ guess, className, solution, onSelectCell, selectedC
     const position = Number(event.currentTarget.dataset.position);
     onSelectCell(position);
   }
-  //TODO on keyboard
 
   return (
     <div className={classes} role="list" aria-label="current row">

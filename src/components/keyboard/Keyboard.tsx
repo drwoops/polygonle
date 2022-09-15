@@ -1,10 +1,11 @@
 import { getStatuses } from '../../lib/statuses'
 import { Key } from './Key'
 import { useEffect } from 'react'
-import { ENTER_TEXT, DELETE_TEXT } from '../../constants/strings'
+import { ENTER_TEXT, DELETE_TEXT, ARROW_RIGHT, ARROW_LEFT } from '../../constants/strings'
 import { localeAwareUpperCase } from '../../lib/words'
 
 type Props = {
+  onArrow: (key: string) => void
   onChar: (value: string, position?: number) => void
   onDelete: () => void
   onEnter: () => void
@@ -14,6 +15,7 @@ type Props = {
 }
 
 export const Keyboard = ({
+  onArrow,
   onChar,
   onDelete,
   onEnter,
@@ -37,14 +39,17 @@ export const Keyboard = ({
     const listener = (e: KeyboardEvent) => {
       const isEnter = e.code === 'Enter';
       const isBackspace = e.code === 'Backspace';
+      const isLeftArrow = e.code === ARROW_LEFT;
+      const isRightArrow = e.code === ARROW_RIGHT;
       const key = localeAwareUpperCase(e.key);
-      const isKeypress = key.length === 1 && key >= 'A' && key <= 'Z';
-      if (isEnter) {
+      const isKeypress = key.length === 1 && ((key >= 'A' && key <= 'Z') || key === ' ');
+      if(isRightArrow || isLeftArrow) {
+        onArrow(e.code)
+      } else if (isEnter) {
         onEnter()
       } else if (isBackspace) {
         onDelete()
       } else if (isKeypress){
-        // determine which position is focused
         onChar(key)
       }
     }
@@ -52,7 +57,7 @@ export const Keyboard = ({
     return () => {
       window.removeEventListener('keydown', listener)
     }
-  }, [onEnter, onDelete, onChar])
+  }, [onArrow, onEnter, onDelete, onChar])
 
   return (
     <div aria-label="keyboard" role="list" tabIndex={0}>

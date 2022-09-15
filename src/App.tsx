@@ -40,6 +40,8 @@ import {
   ALERT_DATA_SETTING,
   ALERT_DATA_GAME_END,
   ALERT_DATA_GUESS,
+  ARROW_LEFT,
+  ARROW_RIGHT,
 } from './constants/strings'
 import {
   MAX_CHALLENGES,
@@ -408,7 +410,6 @@ function App() {
   ])
 
   const setCurrentGuessChar = (c: string, index: number) => {
-    console.log(`c: ${c} index: ${index}`)
     let chars = new GraphemeSplitter().splitGraphemes(currentGuess)
     if (index > chars.length - 1) {
       const padding = Array(index - (chars.length - 1)).fill(' ')
@@ -418,6 +419,24 @@ function App() {
     chars[index] = c
     setCurrentGuess(chars.join(''))
     setSelectedCellIndex(index + 1)
+  }
+
+  const onArrow = (key: string) => {
+    switch (key) {
+      case ARROW_RIGHT:
+        if (selectedCellIndex < solution.word.length - 1) {
+          setSelectedCellIndex(selectedCellIndex + 1)
+        }
+        break
+      case ARROW_LEFT:
+        if (selectedCellIndex > 0) {
+          setSelectedCellIndex(selectedCellIndex - 1)
+        }
+        break
+
+      default:
+        return
+    }
   }
 
   const onChar = (value: string) => {
@@ -432,13 +451,18 @@ function App() {
 
   const onDelete = () => {
     if (selectedCellIndex > 0) {
-      setCurrentGuess(
-        new GraphemeSplitter()
-          .splitGraphemes(currentGuess)
-          .slice(0, -1)
-          .join('')
-      )
-      setSelectedCellIndex(selectedCellIndex - 1)
+      let chars = new GraphemeSplitter().splitGraphemes(currentGuess)
+      let deletedChar = false
+      let index = chars.length - 1
+      while (index >= 0 && (!deletedChar || chars[index] === ' ')) {
+        if (chars[index] !== ' ') {
+          deletedChar = true
+        }
+        chars.pop()
+        index -= 1
+      }
+      setCurrentGuess(chars.join(''))
+      setSelectedCellIndex(index + 1)
     }
   }
 
@@ -492,7 +516,7 @@ function App() {
     }
 
     if (
-      !currentGuess.includes(' ') &&
+      currentGuess.includes(' ') ||
       !(unicodeLength(currentGuess) === solution.word.length)
     ) {
       guessGA(false)
@@ -600,6 +624,7 @@ function App() {
           />
         </div>
         <Keyboard
+          onArrow={onArrow}
           onChar={onChar}
           onDelete={onDelete}
           onEnter={onEnter}
