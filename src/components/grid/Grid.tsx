@@ -22,10 +22,9 @@ export const Grid = ({
   onSelectCell,
   selectedCellIndex
 }: Props) => {
-  const empties =
-    guesses.length < MAX_CHALLENGES - 1
-      ? Array.from(Array(MAX_CHALLENGES - 1 - guesses.length))
-      : []
+  const solved = guesses[guesses.length - 1] === solution;
+  const remainingGuesses = MAX_CHALLENGES - guesses.length;
+  const empties = Array.from(Array(remainingGuesses));
   return (
     <>
       {guesses.map((guess, i) => (
@@ -36,12 +35,12 @@ export const Grid = ({
           isRevealing={isRevealing && guesses.length - 1 === i}
         />
       ))}
-      {guesses.length < MAX_CHALLENGES && (
-        <CurrentRow solution={solution} guess={currentGuess} className={currentRowClassName} onSelectCell={onSelectCell} selectedCellIndex={selectedCellIndex} />
-      )}
-      {empties.map((_, i) => (
-        <EmptyRow key={i} solution={solution} />
-      ))}
+      {empties.map((_, i) => { 
+        if(i === 0 && !solved) {
+          return <CurrentRow key={i} solution={solution} guess={currentGuess} className={currentRowClassName} onSelectCell={onSelectCell} selectedCellIndex={selectedCellIndex} />
+        }
+        return <EmptyRow key={i} solution={solution} />
+      })}
     </>
   )
 }

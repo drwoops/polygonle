@@ -25,7 +25,6 @@ export const Cell = ({
   active,
   focusable = false,
 }: Props) => {
-
   const cellRef = useRef<HTMLDivElement>(null);
   const isFilled = value && !isCompleted
   const shouldReveal = isRevealing && isCompleted
@@ -34,7 +33,7 @@ export const Cell = ({
   const ariaLabel = !status ? 'empty cell' : `letter "${value}" is ${status}`;
 
   const classes = classnames(
-    'cell w-14 h-14 border-solid border-2 flex items-center justify-center mx-0.5 text-3xl font-bold rounded dark:text-white focus:outline-none focus:border-4 focus:border-indigo-700 dark:focus:border-indigo-300',
+    'cell w-14 h-14 flex items-center justify-center mx-0.5 text-3xl font-bold rounded dark:text-white focus:outline-none',
     {
       'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-600':
         !status,
@@ -49,12 +48,17 @@ export const Cell = ({
         status === 'correct' && !isHighContrast,
       'present bg-yellow-500 text-white border-yellow-500':
         status === 'present' && !isHighContrast,
+      'border-solid border-2': !active,
+      'border-4 border-indigo-700 dark:border-indigo-300': active,
       'cell-fill-animation': isFilled,
       'cell-reveal': shouldReveal,
     }
   )
 
   useEffect(() => {
+    if(!focusable) {
+      return
+    }
     if(active) {
       const x = window.scrollX;
       const y = window.scrollY;
@@ -63,11 +67,13 @@ export const Cell = ({
     } else {
       cellRef.current?.blur()
     }
-  }, [active])
+  }, [active, focusable])
+
+  const focusableProp = focusable ? {tabIndex: 0}: {}
 
   return (
     <div ref={cellRef} 
-      onClick={onClick} onFocus={onClick} className={classes} style={{ animationDelay }} tabIndex={focusable ? 0 : -1} role="listitem" aria-label={ariaLabel} data-position={position}>
+      onClick={onClick} onFocus={onClick} className={classes} {...focusableProp} style={{ animationDelay }} role="listitem" aria-label={ariaLabel} data-position={position}>
       <div className="letter-container" style={{ animationDelay }}>
         {value}
       </div>

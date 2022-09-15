@@ -6,7 +6,7 @@ export const EmptyRow = ({solution}: {solution: string}) => {
   return (
     <div className="flex justify-center mb-1" role="list" aria-label="empty row">
       {emptyCells.map((_, i) => (
-        <Cell key={i} />
+        <Cell key={i} focusable={false} />
       ))}
     </div>
   )

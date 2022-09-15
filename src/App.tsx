@@ -296,6 +296,7 @@ function App() {
     setCurrentGuess('')
     setIsGameWon(false)
     setIsGameLost(false)
+    setSelectedCellIndex(0)
   }
 
   const handleGameMode = (gameMode: string) => {
@@ -449,9 +450,25 @@ function App() {
     }
   }
 
-  const onDelete = () => {
-    if (selectedCellIndex > 0) {
-      let chars = new GraphemeSplitter().splitGraphemes(currentGuess)
+  const deleteCharAndSpaces = (guess: string, index: number) => {
+    const chars = new GraphemeSplitter().splitGraphemes(guess)
+    let finalIndex = index
+    const hasTrailingChar = (() => {
+      for (let i = index; i < chars.length; i++) {
+        if (chars[i] && chars[i] !== ' ') {
+          return true
+        }
+      }
+      return false
+    })()
+
+    // When we're in the middle of a guess don't shift characters
+    if (hasTrailingChar) {
+      if (chars[index] === ' ') {
+        finalIndex -= 1 // Only move cursor on spaces.
+      }
+      chars[index] = ' '
+    } else {
       let deletedChar = false
       let index = chars.length - 1
       while (index >= 0 && (!deletedChar || chars[index] === ' ')) {
@@ -461,8 +478,19 @@ function App() {
         chars.pop()
         index -= 1
       }
-      setCurrentGuess(chars.join(''))
-      setSelectedCellIndex(index + 1)
+      finalIndex = index + 1 // final cursor position after exiting loop
+    }
+    return { guess: chars.join(''), index: finalIndex }
+  }
+
+  const onDelete = () => {
+    if (selectedCellIndex > 0) {
+      const { guess, index } = deleteCharAndSpaces(
+        currentGuess,
+        selectedCellIndex
+      )
+      setCurrentGuess(guess)
+      setSelectedCellIndex(index)
     }
   }
 
@@ -505,7 +533,6 @@ function App() {
     })
   }
 
-  // TODO: Trigger on focus change via other methods (tab, arrow keys)
   const onSelectCell = (index: number) => {
     setSelectedCellIndex(index)
   }
@@ -568,6 +595,7 @@ function App() {
     // chars have been revealed
     setTimeout(() => {
       setIsRevealing(false)
+      setSelectedCellIndex(0)
     }, REVEAL_TIME_MS * solution.word.length)
 
     const winningWord = currentGuess === solution.word
@@ -579,7 +607,6 @@ function App() {
     ) {
       setGuesses([...guesses, currentGuess])
       setCurrentGuess('')
-      setSelectedCellIndex(0)
 
       if (winningWord) {
         gameFinishGA(true)
@@ -596,6 +623,7 @@ function App() {
           persist: true,
           delayMs: REVEAL_TIME_MS * solution.word.length + 1,
         })
+        return
       }
     }
   }
