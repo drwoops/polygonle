@@ -13434,6 +13434,7 @@ export const VALID_GUESSES = [
 "celosia",
 "celosias",
 "celotex",
+"celsius",
 "cembali",
 "cembalo",
 "cembalos",
