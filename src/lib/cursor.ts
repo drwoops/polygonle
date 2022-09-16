@@ -32,6 +32,7 @@ export const cursorDelete = (guess: string, cursorIndex: number): CursorResult =
   let newIndex = cursorIndex
   if(isChar(cursorIndex)){ // cursor on a character
     chars[cursorIndex] = SPACE 
+    return { guess: chars.join(''), index: newIndex }
   } else if (isChar(cursorIndex - 1)){ // cursor adjacent to character 
     chars[cursorIndex - 1] = SPACE 
     newIndex--

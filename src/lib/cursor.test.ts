@@ -36,9 +36,15 @@ describe('cursorDelete', () => {
     expect(index).toBe(2)
   })
 
+  test('specific character delete with space', () => {
+    const { guess, index } = cursorDelete('gu  s', 4)
+    expect(guess).toBe('gu   ')
+    expect(index).toBe(4)
+  })
+
   test('trailing specific character delete', () => {
     const { guess, index } = cursorDelete('guess', 4)
-    expect(guess).toBe('gues')
+    expect(guess).toBe('gues ')
     expect(index).toBe(4)
   })
 
