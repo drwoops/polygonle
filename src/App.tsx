@@ -40,6 +40,8 @@ import {
   ALERT_DATA_SETTING,
   ALERT_DATA_GAME_END,
   ALERT_DATA_GUESS,
+  ARROW_LEFT,
+  ARROW_RIGHT,
 } from './constants/strings'
 import {
   MAX_CHALLENGES,
@@ -58,6 +60,7 @@ import {
   isWordInWordList,
   unicodeLength,
 } from './lib/words'
+import { cursorDelete } from './lib/cursor'
 import { addStatsForCompletedGame, loadStats } from './lib/stats'
 import {
   getStoredGameState,
@@ -100,6 +103,7 @@ function App() {
   const [isSupportModalOpen, setIsSupportModalOpen] = useState(false)
   const [isMigrateStatsModalOpen, setIsMigrateStatsModalOpen] = useState(false)
   const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false)
+  const [cursorIndex, setCursorIndex] = useState(0)
 
   const modalOpenWrapper = (
     setter: (setting: boolean) => void,
@@ -293,6 +297,7 @@ function App() {
     setCurrentGuess('')
     setIsGameWon(false)
     setIsGameLost(false)
+    setCursorIndex(0)
   }
 
   const handleGameMode = (gameMode: string) => {
@@ -406,20 +411,52 @@ function App() {
     setIsStatsModalOpenGA,
   ])
 
+  const setCurrentGuessChar = (c: string, index: number) => {
+    let chars = new GraphemeSplitter().splitGraphemes(currentGuess)
+    if (index > chars.length - 1) {
+      const padding = Array(index - (chars.length - 1)).fill(' ')
+      chars = chars.concat(padding)
+    }
+
+    chars[index] = c
+    setCurrentGuess(chars.join(''))
+    setCursorIndex(index + 1)
+  }
+
+  const onArrow = (key: string) => {
+    switch (key) {
+      case ARROW_RIGHT:
+        if (cursorIndex < solution.word.length - 1) {
+          setCursorIndex(cursorIndex + 1)
+        }
+        break
+      case ARROW_LEFT:
+        if (cursorIndex > 0) {
+          setCursorIndex(cursorIndex - 1)
+        }
+        break
+
+      default:
+        return
+    }
+  }
+
   const onChar = (value: string) => {
     if (
-      unicodeLength(`${currentGuess}${value}`) <= solution.word.length &&
+      cursorIndex < solution.word.length &&
       guesses.length < MAX_CHALLENGES &&
       !isGameWon
     ) {
-      setCurrentGuess(`${currentGuess}${value}`)
+      setCurrentGuessChar(value, cursorIndex)
     }
   }
 
   const onDelete = () => {
-    setCurrentGuess(
-      new GraphemeSplitter().splitGraphemes(currentGuess).slice(0, -1).join('')
-    )
+    if (cursorIndex >= 0) {
+      const { guess, index } = cursorDelete(currentGuess, cursorIndex)
+      setCurrentGuess(guess)
+      setCursorIndex(index)
+    }
   }
 
   const onRefresh = () => {
@@ -461,12 +498,19 @@ function App() {
     })
   }
 
+  const onSelectCell = (index: number) => {
+    setCursorIndex(index)
+  }
+
   const onEnter = () => {
     if (isGameWon || isGameLost) {
       return
     }
 
-    if (!(unicodeLength(currentGuess) === solution.word.length)) {
+    if (
+      currentGuess.includes(' ') ||
+      !(unicodeLength(currentGuess) === solution.word.length)
+    ) {
       guessGA(false)
       setCurrentRowClass('jiggle')
       return showErrorAlert(NOT_ENOUGH_LETTERS_MESSAGE, {
@@ -516,6 +560,7 @@ function App() {
     // chars have been revealed
     setTimeout(() => {
       setIsRevealing(false)
+      setCursorIndex(0)
     }, REVEAL_TIME_MS * solution.word.length)
 
     const winningWord = currentGuess === solution.word
@@ -543,6 +588,7 @@ function App() {
           persist: true,
           delayMs: REVEAL_TIME_MS * solution.word.length + 1,
         })
+        return
       }
     }
   }
@@ -567,9 +613,12 @@ function App() {
             currentGuess={currentGuess}
             isRevealing={isRevealing}
             currentRowClassName={currentRowClass}
+            onSelectCell={onSelectCell}
+            cursorIndex={cursorIndex}
           />
         </div>
         <Keyboard
+          onArrow={onArrow}
           onChar={onChar}
           onDelete={onDelete}
           onEnter={onEnter}

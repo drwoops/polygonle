@@ -9,6 +9,8 @@ type Props = {
   currentGuess: string
   isRevealing?: boolean
   currentRowClassName: string
+  onSelectCell: (index: number) => void
+  cursorIndex: number
 }
 
 export const Grid = ({
@@ -17,11 +19,12 @@ export const Grid = ({
   currentGuess,
   isRevealing,
   currentRowClassName,
+  onSelectCell,
+  cursorIndex
 }: Props) => {
-  const empties =
-    guesses.length < MAX_CHALLENGES - 1
-      ? Array.from(Array(MAX_CHALLENGES - 1 - guesses.length))
-      : []
+  const solved = guesses[guesses.length - 1] === solution;
+  const remainingGuesses = MAX_CHALLENGES - guesses.length;
+  const empties = Array.from(Array(remainingGuesses));
   return (
     <>
       {guesses.map((guess, i) => (
@@ -32,12 +35,12 @@ export const Grid = ({
           isRevealing={isRevealing && guesses.length - 1 === i}
         />
       ))}
-      {guesses.length < MAX_CHALLENGES && (
-        <CurrentRow solution={solution} guess={currentGuess} className={currentRowClassName} />
-      )}
-      {empties.map((_, i) => (
-        <EmptyRow key={i} solution={solution} />
-      ))}
+      {empties.map((_, i) => { 
+        if(i === 0 && !solved) {
+          return <CurrentRow key={i} solution={solution} guess={currentGuess} className={currentRowClassName} onSelectCell={onSelectCell} cursorIndex={cursorIndex} />
+        }
+        return <EmptyRow key={i} solution={solution} />
+      })}
     </>
   )
 }

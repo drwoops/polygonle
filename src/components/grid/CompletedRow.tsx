@@ -21,6 +21,7 @@ export const CompletedRow = ({ solution, guess, isRevealing }: Props) => {
           status={statuses[i]}
           position={i}
           isRevealing={isRevealing}
+          focusable={true}
           isCompleted
         />
       ))}

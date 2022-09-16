@@ -1,11 +1,12 @@
 import { getStatuses } from '../../lib/statuses'
 import { Key } from './Key'
-import { useEffect, useRef } from 'react'
-import { ENTER_TEXT, DELETE_TEXT } from '../../constants/strings'
+import { useEffect } from 'react'
+import { ENTER_TEXT, DELETE_TEXT, ARROW_RIGHT, ARROW_LEFT } from '../../constants/strings'
 import { localeAwareUpperCase } from '../../lib/words'
 
 type Props = {
-  onChar: (value: string) => void
+  onArrow: (key: string) => void
+  onChar: (value: string, position?: number) => void
   onDelete: () => void
   onEnter: () => void
   solution: string
@@ -14,6 +15,7 @@ type Props = {
 }
 
 export const Keyboard = ({
+  onArrow,
   onChar,
   onDelete,
   onEnter,
@@ -22,7 +24,6 @@ export const Keyboard = ({
   isRevealing,
 }: Props) => {
   const charStatuses = getStatuses(solution, guesses)
-  const keyboardRef = useRef<HTMLDivElement>(null);
 
   const onClick = (value: string) => {
     if (value === 'ENTER') {
@@ -38,9 +39,13 @@ export const Keyboard = ({
     const listener = (e: KeyboardEvent) => {
       const isEnter = e.code === 'Enter';
       const isBackspace = e.code === 'Backspace';
+      const isLeftArrow = e.code === ARROW_LEFT;
+      const isRightArrow = e.code === ARROW_RIGHT;
       const key = localeAwareUpperCase(e.key);
-      const isKeypress = key.length === 1 && key >= 'A' && key <= 'Z';
-      if (isEnter) {
+      const isKeypress = key.length === 1 && ((key >= 'A' && key <= 'Z') || key === ' ');
+      if(isRightArrow || isLeftArrow) {
+        onArrow(e.code)
+      } else if (isEnter) {
         onEnter()
       } else if (isBackspace) {
         onDelete()
@@ -52,10 +57,10 @@ export const Keyboard = ({
     return () => {
       window.removeEventListener('keydown', listener)
     }
-  }, [onEnter, onDelete, onChar])
+  }, [onArrow, onEnter, onDelete, onChar])
 
   return (
-    <div ref={keyboardRef} aria-label="keyboard" role="list" tabIndex={0}>
+    <div aria-label="keyboard" role="list" tabIndex={0}>
       <div className="flex justify-center mb-1">
         {['Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P'].map((key) => (
           <Key

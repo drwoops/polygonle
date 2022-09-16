@@ -83,3 +83,7 @@ export const GA_ACTION_GAME_FINISH = 'game_finish'
 export const GA_ACTION_REFRESH = 'refresh'
 export const GA_ACTION_SHARE = 'share'
 
+// arrowkeys
+export const ARROW_LEFT = 'ArrowLeft';
+export const ARROW_RIGHT = 'ArrowRight';
+

@@ -53,11 +53,13 @@ class ErrorBoundary extends Component<Props, State> {
             <div className="pb-6 grow">
               <Puzzle puzzle={puzzle} />
               <Grid
+                cursorIndex={5}
                 solution={'error'}
                 guesses={['added', 'geese', 'error']}
                 currentGuess={''}
                 isRevealing={false}
                 currentRowClassName={''}
+                onSelectCell={() => {}}
               />
             </div>
 
