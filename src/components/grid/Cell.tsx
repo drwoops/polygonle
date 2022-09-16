@@ -1,5 +1,5 @@
 import { CharStatus } from '../../lib/statuses'
-import { useEffect, useRef } from 'react'
+import { useRef } from 'react'
 import classnames from 'classnames'
 import { REVEAL_TIME_MS } from '../../constants/settings'
 import { getStoredIsHighContrastMode } from '../../lib/localStorage'
@@ -56,20 +56,6 @@ export const Cell = ({
       'cell-reveal': shouldReveal,
     }
   )
-
-  //useEffect(() => {
-  //  if(!focusable) {
-  //    return
-  //  }
-  //  if(active) {
-  //    const x = window.scrollX;
-  //    const y = window.scrollY;
-  //    cellRef.current?.focus()
-  //    window.scrollTo(x, y); // focus without scrolling
-  //  } else {
-  //    cellRef.current?.blur()
-  //  }
-  //}, [active, focusable])
 
   const focusableProp = focusable ? {tabIndex: 0}: {}
 
