@@ -42,6 +42,7 @@ import {
   ALERT_DATA_GUESS,
   ARROW_LEFT,
   ARROW_RIGHT,
+  SEARCH_PARAM_UNLIMITED,
 } from './constants/strings'
 import {
   MAX_CHALLENGES,
@@ -77,7 +78,7 @@ import {
   setStoredExpertMode,
 } from './lib/localStorage'
 import { default as GraphemeSplitter } from 'grapheme-splitter'
-import { useParams, useNavigate } from 'react-router-dom'
+import { useParams, useNavigate, useSearchParams } from 'react-router-dom'
 
 import './App.css'
 import { AlertContainer } from './components/alerts/AlertContainer'
@@ -94,10 +95,14 @@ function App() {
     setIsVisible: setIsAlertVisible,
   } = useAlert()
   let { puzzleId, seed } = useParams<{ puzzleId: string; seed: string }>()
+  const searchParams = useSearchParams()[0]
   const navigate = useNavigate()
   const [currentGuess, setCurrentGuess] = useState('')
   const [isGameWon, setIsGameWon] = useState(false)
-
+  const [hasShownInfo, setHasShownInfo] = useState(
+    !!getStoredGameState(GAME_MODE_DAILY) ||
+      !!getStoredGameState(GAME_MODE_UNLIMITED)
+  )
   const [isInfoModalOpen, setIsInfoModalOpen] = useState(false)
   const [isStatsModalOpen, setIsStatsModalOpen] = useState(false)
   const [isSupportModalOpen, setIsSupportModalOpen] = useState(false)
@@ -156,6 +161,7 @@ function App() {
     getStoredIsHighContrastMode()
   )
   const [isRevealing, setIsRevealing] = useState(false)
+  const [newSolve, setNewSolve] = useState(false)
 
   const randomSeed = () => {
     return [...Array(8)]
@@ -173,19 +179,22 @@ function App() {
     }
   })
 
-  const getUnlimitedPuzzleIdWithRetry = (index: number, seed: string) => {
-    let pidAndIndex = getUnlimitedPuzzleId(index, seed)
-    if (!pidAndIndex) {
-      // exhausted entire list so start over with a new seed
-      index = 0
-      seed = randomSeed()
-      pidAndIndex = getUnlimitedPuzzleId(index, seed)
-    }
-    if (!pidAndIndex) {
-      throw new Error('unlimited pid index out of range despite refresh')
-    }
-    return { ...pidAndIndex!, seed }
-  }
+  const getUnlimitedPuzzleIdWithRetry = useCallback(
+    (index: number, seed: string) => {
+      let pidAndIndex = getUnlimitedPuzzleId(index, seed)
+      if (!pidAndIndex) {
+        // exhausted entire list so start over with a new seed
+        index = 0
+        seed = randomSeed()
+        pidAndIndex = getUnlimitedPuzzleId(index, seed)
+      }
+      if (!pidAndIndex) {
+        throw new Error('unlimited pid index out of range despite refresh')
+      }
+      return { ...pidAndIndex!, seed }
+    },
+    []
+  )
 
   const puzzleSlug = (pid: string, s: string) => `/${pid}${s ? '/' + s : ''}`
 
@@ -248,17 +257,22 @@ function App() {
   const [isExpertMode, setIsExpertMode] = useState(getStoredExpertMode())
 
   useEffect(() => {
-    // if no game state on load,
-    // show the user the how-to info modal
-    if (
-      !getStoredGameState(GAME_MODE_DAILY) &&
-      !getStoredGameState(GAME_MODE_UNLIMITED)
-    ) {
+    // clear any queued alerts if we refresh the puzzle or change game modes
+    var id = window.setTimeout(function () {}, 0)
+
+    while (id--) {
+      window.clearTimeout(id) // will do nothing if no timeout with id is present
+    }
+  }, [puzzleId, gameMode])
+
+  useEffect(() => {
+    if (!hasShownInfo) {
       setTimeout(() => {
         setIsInfoModalOpenGA(true)
       }, WELCOME_INFO_MODAL_MS)
+      setHasShownInfo(true)
     }
-  })
+  }, [hasShownInfo, setIsInfoModalOpenGA])
 
   useEffect(() => {
     DISCOURAGE_INAPP_BROWSERS &&
@@ -292,33 +306,37 @@ function App() {
     setStoredDarkMode(isDark)
   }
 
-  const clearGameState = () => {
+  const clearGameState = useCallback(() => {
     setIsAlertVisible(false)
     setCurrentGuess('')
     setIsGameWon(false)
     setIsGameLost(false)
+    setNewSolve(false)
     setCursorIndex(0)
-  }
+  }, [setIsAlertVisible])
 
-  const handleGameMode = (gameMode: string) => {
-    ReactGA.event({
-      category: GA_CATEGORY_SETTINGS,
-      action: GA_ACTION_GAMEMODE_TOGGLE,
-    })
+  const handleGameMode = useCallback(
+    (gameMode: string) => {
+      ReactGA.event({
+        category: GA_CATEGORY_SETTINGS,
+        action: GA_ACTION_GAMEMODE_TOGGLE,
+      })
 
-    clearGameState()
-    setGameMode(gameMode)
-    if (gameMode === GAME_MODE_DAILY) {
-      navigate('/')
-    } else {
-      const { pid, index, seed } = getUnlimitedPuzzleIdWithRetry(
-        unlimitedState.index,
-        unlimitedState.seed
-      )
-      unlimitedState.index = index
-      navigate(puzzleSlug(pid, seed))
-    }
-  }
+      clearGameState()
+      setGameMode(gameMode)
+      if (gameMode === GAME_MODE_DAILY) {
+        navigate('/')
+      } else {
+        const { pid, index, seed } = getUnlimitedPuzzleIdWithRetry(
+          unlimitedState.index,
+          unlimitedState.seed
+        )
+        unlimitedState.index = index
+        navigate(puzzleSlug(pid, seed))
+      }
+    },
+    [clearGameState, getUnlimitedPuzzleIdWithRetry, navigate, unlimitedState]
+  )
 
   const detectHexpertMode = (isHard: boolean, isExpert: boolean) => {
     if (isHard && isExpert) {
@@ -374,6 +392,12 @@ function App() {
   }
 
   useEffect(() => {
+    if (searchParams.has(SEARCH_PARAM_UNLIMITED)) {
+      handleGameMode(GAME_MODE_UNLIMITED)
+    }
+  }, [searchParams, handleGameMode])
+
+  useEffect(() => {
     setStoredGameState({ gameMode, guesses, solution: solution.word })
   }, [gameMode, guesses, solution.word])
 
@@ -389,7 +413,9 @@ function App() {
     if (isGameWon) {
       const winMessage =
         WIN_MESSAGES[Math.floor(Math.random() * WIN_MESSAGES.length)]
-      const delayMs = REVEAL_TIME_MS * solution.word.length
+      const delayMs = newSolve
+        ? REVEAL_TIME_MS * solution.word.length
+        : REVEAL_TIME_MS
 
       showSuccessAlert(winMessage, {
         data: { type: ALERT_DATA_GAME_END },
@@ -409,6 +435,7 @@ function App() {
     showSuccessAlert,
     solution.word.length,
     setIsStatsModalOpenGA,
+    newSolve,
   ])
 
   const setCurrentGuessChar = (c: string, index: number) => {
@@ -556,6 +583,7 @@ function App() {
 
     guessGA(true)
     setIsRevealing(true)
+    setNewSolve(true)
     // turn this back off after all
     // chars have been revealed
     setTimeout(() => {
