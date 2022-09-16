@@ -92,11 +92,14 @@ function App() {
     setIsVisible: setIsAlertVisible,
   } = useAlert()
   let { puzzleId, seed } = useParams<{ puzzleId: string; seed: string }>()
-  const [searchParams, setSearchParams] = useSearchParams()
+  const searchParams = useSearchParams()[0]
   const navigate = useNavigate()
   const [currentGuess, setCurrentGuess] = useState('')
   const [isGameWon, setIsGameWon] = useState(false)
-
+  const [hasShownInfo, setHasShownInfo] = useState(
+    !!getStoredGameState(GAME_MODE_DAILY) ||
+      !!getStoredGameState(GAME_MODE_UNLIMITED)
+  )
   const [isInfoModalOpen, setIsInfoModalOpen] = useState(false)
   const [isStatsModalOpen, setIsStatsModalOpen] = useState(false)
   const [isSupportModalOpen, setIsSupportModalOpen] = useState(false)
@@ -154,6 +157,7 @@ function App() {
     getStoredIsHighContrastMode()
   )
   const [isRevealing, setIsRevealing] = useState(false)
+  const [newSolve, setNewSolve] = useState(false)
 
   const randomSeed = () => {
     return [...Array(8)]
@@ -258,18 +262,13 @@ function App() {
   }, [puzzleId, gameMode])
 
   useEffect(() => {
-    // if no game state on load,
-    // show the user the how-to info modal
-    // TODO add local variable when this fires to avoid a cycle of showing
-    if (
-      !getStoredGameState(GAME_MODE_DAILY) &&
-      !getStoredGameState(GAME_MODE_UNLIMITED)
-    ) {
+    if (!hasShownInfo) {
       setTimeout(() => {
         setIsInfoModalOpenGA(true)
       }, WELCOME_INFO_MODAL_MS)
+      setHasShownInfo(true)
     }
-  })
+  }, [hasShownInfo, setIsInfoModalOpenGA])
 
   useEffect(() => {
     DISCOURAGE_INAPP_BROWSERS &&
@@ -308,6 +307,7 @@ function App() {
     setCurrentGuess('')
     setIsGameWon(false)
     setIsGameLost(false)
+    setNewSolve(false)
   }, [setIsAlertVisible])
 
   const handleGameMode = useCallback(
@@ -408,7 +408,7 @@ function App() {
     if (isGameWon) {
       const winMessage =
         WIN_MESSAGES[Math.floor(Math.random() * WIN_MESSAGES.length)]
-      const delayMs = isRevealing
+      const delayMs = newSolve
         ? REVEAL_TIME_MS * solution.word.length
         : REVEAL_TIME_MS
 
@@ -430,6 +430,7 @@ function App() {
     showSuccessAlert,
     solution.word.length,
     setIsStatsModalOpenGA,
+    newSolve,
   ])
 
   const onChar = (value: string) => {
@@ -538,6 +539,7 @@ function App() {
 
     guessGA(true)
     setIsRevealing(true)
+    setNewSolve(true)
     // turn this back off after all
     // chars have been revealed
     setTimeout(() => {
