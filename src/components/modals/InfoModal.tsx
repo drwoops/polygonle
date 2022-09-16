@@ -28,8 +28,7 @@ export const InfoModal = ({ isOpen, handleClose }: Props) => {
       	<div className="flip-card-front h-14 w-14">
       	  <Shape shape={s} useMargin={true} />
       	</div>
-      	<div className="flip-card-back h-14 w-14 text-5xl 
-					font-bold rounded text-gray-700 dark:text-gray-300 uppercase">
+      	<div className="flip-card-back h-14 w-14 text-5xl font-bold rounded text-gray-700 dark:text-gray-300 uppercase">
       	  <div>{l}</div> 
       	</div>
     	</div>
@@ -47,21 +46,15 @@ export const InfoModal = ({ isOpen, handleClose }: Props) => {
     	<div className="flex justify-center m-4" role="list" aria-label="puzzle">
         {['p', 'e', 'o', 'p', 'l', 'e'].map((l: string, i:number) => flipCard(i, l, puzzle[i]))}
 			</div>
-      <a href="https://www.tiktok.com/@blorppppp_/video/7127392446446636331?is_copy_url=1&is_from_webapp=v1" target="_blank" rel="noopener noreferrer" className="block text-left text-sm text-gray-700 dark:text-gray-300 pl-2 hover:text-indigo-700">
-        <PlayIcon className="inline-flex h-6 w-6 scale-up cursor-pointer dark:stroke-white m-1" />
- 
-        Watch a <strong>how to play</strong> video
-      </a>
-      <a href="https://www.tiktok.com/@wordletips/video/7141108502038105387?is_from_webapp=v1&item_id=7141108502038105387" target="_blank" rel="noopener noreferrer" className="block text-left text-sm text-gray-700 dark:text-gray-300 pl-2 hover:text-indigo-700">
-        <PlayIcon className="inline-flex h-6 w-6 scale-up cursor-pointer dark:stroke-white m-1" />
+      <a href="https://www.tiktok.com/@wordletips/video/7141108502038105387?is_from_webapp=v1&item_id=7141108502038105387" target="_blank" rel="noopener noreferrer" className="flex justify-center block text-sm text-gray-700 dark:text-gray-300 p-2 hover:text-indigo-700 font-bold">
+        <PlayIcon className="inline-flex h-6 w-6 scale-up cursor-pointer dark:stroke-white mr-1" />
         Watch an example solve
       </a>
-      <h2 className="text-lg leading-6 font-medium text-gray-900 dark:text-gray-100 m-4"> Guessing </h2>
       <p className="text-sm text-gray-700 dark:text-gray-300 p-2">
-        You may guess any word of the correct length. After each guess, the tiles will show if your letters are in the secret word.
+        You may guess any word of the correct length. Tiles will reveal if your letters are in the secret word.
       </p>
-      <div className="grid grid-cols-4 gap-4 m-6">
-        <div className="col-span-1 flex">
+      <div className="grid grid-cols-4 gap-4 m-6 max-w-sm">
+        <div className="col-span-1 flex items-center justify-center">
           <Cell
             isRevealing={true}
             isCompleted={true}
@@ -74,7 +67,7 @@ export const InfoModal = ({ isOpen, handleClose }: Props) => {
             Letter is in the correct location
           </p>
         </div>
-        <div className="col-span-1">
+        <div className="col-span-1 flex items-center justify-center">
           <Cell value="E"
             isRevealing={true}
             isCompleted={true}
@@ -86,7 +79,7 @@ export const InfoModal = ({ isOpen, handleClose }: Props) => {
             Letter is in the word but in a different location
           </p>
         </div>
-        <div className="col-span-1">
+        <div className="col-span-1 flex items-center justify-center">
           <Cell isRevealing={true} isCompleted={true} value="I" status="absent" />
         </div>
         <div className="col-span-3 flex items-center justify-center">
