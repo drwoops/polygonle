@@ -4,6 +4,7 @@ export const WIN_MESSAGES = ['Great Job!', 'Awesome', 'Well done!']
 
 export const GAME_MODE_DAILY = 'Daily'
 export const GAME_MODE_UNLIMITED = 'Unlimited'
+export const SEARCH_PARAM_UNLIMITED = 'unlimited'
 export const GAME_MODES = [GAME_MODE_DAILY, GAME_MODE_UNLIMITED]
 export const GAME_COPIED_MESSAGE = 'Game copied to clipboard'
 export const NOT_ENOUGH_LETTERS_MESSAGE = 'Not enough letters'
