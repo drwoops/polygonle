@@ -55,19 +55,19 @@ export const Cell = ({
     }
   )
 
-  useEffect(() => {
-    if(!focusable) {
-      return
-    }
-    if(active) {
-      const x = window.scrollX;
-      const y = window.scrollY;
-      cellRef.current?.focus()
-      window.scrollTo(x, y); // focus without scrolling
-    } else {
-      cellRef.current?.blur()
-    }
-  }, [active, focusable])
+  //useEffect(() => {
+  //  if(!focusable) {
+  //    return
+  //  }
+  //  if(active) {
+  //    const x = window.scrollX;
+  //    const y = window.scrollY;
+  //    cellRef.current?.focus()
+  //    window.scrollTo(x, y); // focus without scrolling
+  //  } else {
+  //    cellRef.current?.blur()
+  //  }
+  //}, [active, focusable])
 
   const focusableProp = focusable ? {tabIndex: 0}: {}
 

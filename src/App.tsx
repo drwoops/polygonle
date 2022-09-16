@@ -60,6 +60,7 @@ import {
   isWordInWordList,
   unicodeLength,
 } from './lib/words'
+import { cursorDelete } from './lib/cursor'
 import { addStatsForCompletedGame, loadStats } from './lib/stats'
 import {
   getStoredGameState,
@@ -102,7 +103,7 @@ function App() {
   const [isSupportModalOpen, setIsSupportModalOpen] = useState(false)
   const [isMigrateStatsModalOpen, setIsMigrateStatsModalOpen] = useState(false)
   const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false)
-  const [selectedCellIndex, setSelectedCellIndex] = useState(0)
+  const [cursorIndex, setCursorIndex] = useState(0)
 
   const modalOpenWrapper = (
     setter: (setting: boolean) => void,
@@ -296,7 +297,7 @@ function App() {
     setCurrentGuess('')
     setIsGameWon(false)
     setIsGameLost(false)
-    setSelectedCellIndex(0)
+    setCursorIndex(0)
   }
 
   const handleGameMode = (gameMode: string) => {
@@ -419,19 +420,19 @@ function App() {
 
     chars[index] = c
     setCurrentGuess(chars.join(''))
-    setSelectedCellIndex(index + 1)
+    setCursorIndex(index + 1)
   }
 
   const onArrow = (key: string) => {
     switch (key) {
       case ARROW_RIGHT:
-        if (selectedCellIndex < solution.word.length - 1) {
-          setSelectedCellIndex(selectedCellIndex + 1)
+        if (cursorIndex < solution.word.length - 1) {
+          setCursorIndex(cursorIndex + 1)
         }
         break
       case ARROW_LEFT:
-        if (selectedCellIndex > 0) {
-          setSelectedCellIndex(selectedCellIndex - 1)
+        if (cursorIndex > 0) {
+          setCursorIndex(cursorIndex - 1)
         }
         break
 
@@ -442,56 +443,19 @@ function App() {
 
   const onChar = (value: string) => {
     if (
-      selectedCellIndex < solution.word.length &&
+      cursorIndex < solution.word.length &&
       guesses.length < MAX_CHALLENGES &&
       !isGameWon
     ) {
-      setCurrentGuessChar(value, selectedCellIndex)
+      setCurrentGuessChar(value, cursorIndex)
     }
-  }
-
-  const deleteCharAndSpaces = (guess: string, index: number) => {
-    const chars = new GraphemeSplitter().splitGraphemes(guess)
-    let finalIndex = index
-    const hasTrailingChar = (() => {
-      for (let i = index; i < chars.length; i++) {
-        if (chars[i] && chars[i] !== ' ') {
-          return true
-        }
-      }
-      return false
-    })()
-
-    // When we're in the middle of a guess don't shift characters
-    if (hasTrailingChar) {
-      if (chars[index] === ' ') {
-        finalIndex -= 1 // Only move cursor on spaces.
-      }
-      chars[index] = ' '
-    } else {
-      let deletedChar = false
-      let index = chars.length - 1
-      while (index >= 0 && (!deletedChar || chars[index] === ' ')) {
-        if (chars[index] !== ' ') {
-          deletedChar = true
-        }
-        chars.pop()
-        index -= 1
-      }
-      finalIndex = index + 1 // final cursor position after exiting loop
-    }
-    finalIndex = finalIndex >= 0 ? finalIndex : 0 // don't return negative indicies
-    return { guess: chars.join(''), index: finalIndex }
   }
 
   const onDelete = () => {
-    if (selectedCellIndex >= 0) {
-      const { guess, index } = deleteCharAndSpaces(
-        currentGuess,
-        selectedCellIndex
-      )
+    if (cursorIndex >= 0) {
+      const { guess, index } = cursorDelete(currentGuess, cursorIndex)
       setCurrentGuess(guess)
-      setSelectedCellIndex(index)
+      setCursorIndex(index)
     }
   }
 
@@ -535,7 +499,7 @@ function App() {
   }
 
   const onSelectCell = (index: number) => {
-    setSelectedCellIndex(index)
+    setCursorIndex(index)
   }
 
   const onEnter = () => {
@@ -596,7 +560,7 @@ function App() {
     // chars have been revealed
     setTimeout(() => {
       setIsRevealing(false)
-      setSelectedCellIndex(0)
+      setCursorIndex(0)
     }, REVEAL_TIME_MS * solution.word.length)
 
     const winningWord = currentGuess === solution.word
@@ -650,7 +614,7 @@ function App() {
             isRevealing={isRevealing}
             currentRowClassName={currentRowClass}
             onSelectCell={onSelectCell}
-            selectedCellIndex={selectedCellIndex}
+            cursorIndex={cursorIndex}
           />
         </div>
         <Keyboard

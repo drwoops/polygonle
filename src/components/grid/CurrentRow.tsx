@@ -6,10 +6,10 @@ type Props = {
   className: string
   solution: string
   onSelectCell: (index: number) => void
-  selectedCellIndex: number
+  cursorIndex: number
 }
 
-export const CurrentRow = ({ guess, className, solution, onSelectCell, selectedCellIndex}: Props) => {
+export const CurrentRow = ({ guess, className, solution, onSelectCell, cursorIndex}: Props) => {
   const splitGuess = unicodeSplit(guess)
   const classes = `flex justify-center mb-1 ${className}`
 
@@ -21,7 +21,7 @@ export const CurrentRow = ({ guess, className, solution, onSelectCell, selectedC
   return (
     <div className={classes} role="list" aria-label="current row">
       {[...Array(solution.length)].map((x, i)=>  {
-        return <Cell active={selectedCellIndex === i} onClick={onClick} key={i} value={splitGuess[i]} position={i} focusable={true} />
+        return <Cell active={cursorIndex === i} onClick={onClick} key={i} value={splitGuess[i]} position={i} focusable={true} />
       })}
     </div>
   )

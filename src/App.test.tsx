@@ -1,4 +1,5 @@
 import React from 'react'
+import { BrowserRouter } from 'react-router-dom'
 import { render, screen } from '@testing-library/react'
 import App from './App'
 import { GAME_TITLE } from './constants/strings'
@@ -20,7 +21,11 @@ beforeEach(() => {
 })
 
 test('renders App component', () => {
-  render(<App />)
+  render(
+    <BrowserRouter>
+      <App />
+    </BrowserRouter>
+  )
   const linkElement = screen.getByText(GAME_TITLE)
   expect(linkElement).toBeInTheDocument()
 })

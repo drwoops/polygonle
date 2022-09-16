@@ -10,7 +10,7 @@ type Props = {
   isRevealing?: boolean
   currentRowClassName: string
   onSelectCell: (index: number) => void
-  selectedCellIndex: number
+  cursorIndex: number
 }
 
 export const Grid = ({
@@ -20,7 +20,7 @@ export const Grid = ({
   isRevealing,
   currentRowClassName,
   onSelectCell,
-  selectedCellIndex
+  cursorIndex
 }: Props) => {
   const solved = guesses[guesses.length - 1] === solution;
   const remainingGuesses = MAX_CHALLENGES - guesses.length;
@@ -37,7 +37,7 @@ export const Grid = ({
       ))}
       {empties.map((_, i) => { 
         if(i === 0 && !solved) {
-          return <CurrentRow key={i} solution={solution} guess={currentGuess} className={currentRowClassName} onSelectCell={onSelectCell} selectedCellIndex={selectedCellIndex} />
+          return <CurrentRow key={i} solution={solution} guess={currentGuess} className={currentRowClassName} onSelectCell={onSelectCell} cursorIndex={cursorIndex} />
         }
         return <EmptyRow key={i} solution={solution} />
       })}
