@@ -22,8 +22,8 @@ export const InfoModal = ({ isOpen, handleClose }: Props) => {
 																	 ['o', 'flip-3'],
 																	 ['l', 'flip-4']])
 
-	const flipCard = (l: string, s: ShapeData) => {
-    return (<div className="flip-card h-14 w-14">
+	const flipCard = (key: number, l: string, s: ShapeData) => {
+    return (<div key={key} className="flip-card h-14 w-14">
     	<div className={`flip-card-inner h-14 w-14 ${animationClasses.get(l)}`}>
       	<div className="flip-card-front h-14 w-14">
       	  <Shape shape={s} useMargin={true} />
@@ -45,7 +45,7 @@ export const InfoModal = ({ isOpen, handleClose }: Props) => {
         Each symbol represents a letter in the word.
       </p>
     	<div className="flex justify-center m-4" role="list" aria-label="puzzle">
-        {['p', 'e', 'o', 'p', 'l', 'e'].map((l: string, i:number) => flipCard(l, puzzle[i]))}
+        {['p', 'e', 'o', 'p', 'l', 'e'].map((l: string, i:number) => flipCard(i, l, puzzle[i]))}
 			</div>
       <a href="https://www.tiktok.com/@blorppppp_/video/7127392446446636331?is_copy_url=1&is_from_webapp=v1" target="_blank" rel="noopener noreferrer" className="block text-left text-sm text-gray-700 dark:text-gray-300 pl-2 hover:text-indigo-700">
         <PlayIcon className="inline-flex h-6 w-6 scale-up cursor-pointer dark:stroke-white m-1" />
@@ -58,7 +58,7 @@ export const InfoModal = ({ isOpen, handleClose }: Props) => {
       </a>
       <h2 className="text-lg leading-6 font-medium text-gray-900 dark:text-gray-100 m-4"> Guessing </h2>
       <p className="text-sm text-gray-700 dark:text-gray-300 p-2">
-        You may guess any word of the correct length. After each guess, the tiles will show whether your letters are in the secret word.
+        You may guess any word of the correct length. After each guess, the tiles will show if your letters are in the secret word.
       </p>
       <div className="grid grid-cols-4 gap-4 m-6">
         <div className="col-span-1 flex">
