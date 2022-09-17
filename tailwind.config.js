@@ -5,7 +5,10 @@ module.exports = {
     extend: {
       borderWidth: {
         '3': '3px',
-      }
+      },
+      minHeight: {
+        '85-screen': '85vh'
+      },
     }
   },
   plugins: [],

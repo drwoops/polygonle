@@ -2,10 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-#app {
-  height: 100vh;
-}
-
 /* Avoid Chrome to see Safari hack */
 @supports (-webkit-touch-callout: none) {
   #app {
