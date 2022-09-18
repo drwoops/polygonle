@@ -57,6 +57,12 @@ export const ALERT_DATA_SETTING = 'setting'
 export const ALERT_DATA_GAME_END = 'game_end'
 export const ALERT_DATA_GUESS = 'guess'
 
+export const GA_DIMENSION_GAME_MODE = 'setting_game_mode'
+export const GA_DIMENSION_DARK_MODE = 'setting_dark_mode'
+export const GA_DIMENSION_HARD_MODE = 'setting_hard_mode'
+export const GA_DIMENSION_EXPERT_MODE = 'setting_expert_mode'
+export const GA_DIMENSION_HIGH_CONTRAST_MODE = 'setting_high_contrast_mode'
+
 export const GA_CATEGORY_SETTINGS = 'settings'
 export const GA_CATEGORY_MODALS = 'modals'
 export const GA_CATEGORY_GAME = 'game'
@@ -79,6 +85,9 @@ export const GA_ACTION_SETTINGMODAL_OPEN = 'settingsmodal_open'
 // game
 export const GA_ACTION_GUESS = 'guess'
 export const GA_ACTION_GAME_FINISH = 'game_finish'
+
+// (recommended GA) game
+export const GA_EVENT_POSTSCORE = 'post_score'
 
 // actions
 export const GA_ACTION_REFRESH = 'refresh'

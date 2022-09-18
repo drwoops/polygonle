@@ -38,6 +38,12 @@ import {
   GA_ACTION_GUESS,
   GA_ACTION_GAME_FINISH,
   GA_ACTION_REFRESH,
+  GA_DIMENSION_GAME_MODE,
+  GA_DIMENSION_DARK_MODE,
+  GA_DIMENSION_HARD_MODE,
+  GA_DIMENSION_EXPERT_MODE,
+  GA_DIMENSION_HIGH_CONTRAST_MODE,
+  GA_EVENT_POSTSCORE,
   ALERT_DATA_SETTING,
   ALERT_DATA_GAME_END,
   ALERT_DATA_GUESS,
@@ -265,6 +271,37 @@ function App() {
       window.clearTimeout(id) // will do nothing if no timeout with id is present
     }
   }, [puzzleId, gameMode])
+
+  // Custom GA dimensions
+  useEffect(() => {
+    ReactGA.set({
+      [GA_DIMENSION_GAME_MODE]: gameMode,
+    })
+  }, [gameMode])
+
+  useEffect(() => {
+    ReactGA.set({
+      [GA_DIMENSION_DARK_MODE]: isDarkMode,
+    })
+  }, [isDarkMode])
+
+  useEffect(() => {
+    ReactGA.set({
+      [GA_DIMENSION_HARD_MODE]: isHardMode,
+    })
+  }, [isHardMode])
+
+  useEffect(() => {
+    ReactGA.set({
+      [GA_DIMENSION_EXPERT_MODE]: isExpertMode,
+    })
+  }, [isExpertMode])
+
+  useEffect(() => {
+    ReactGA.set({
+      [GA_DIMENSION_HIGH_CONTRAST_MODE]: isHighContrastMode,
+    })
+  }, [isHighContrastMode])
 
   useEffect(() => {
     if (!hasShownInfo) {
@@ -518,12 +555,25 @@ function App() {
     })
   }
 
-  const gameFinishGA = (won: boolean) => {
+  const gameFinishGA = (won: boolean, numGuess: number) => {
     ReactGA.event({
       category: GA_CATEGORY_GAME,
       action: GA_ACTION_GAME_FINISH,
       value: +won,
     })
+    // https://developers.google.com/analytics/devguides/collection/ga4/reference/events#post_score
+    if (gameMode === GAME_MODE_DAILY) {
+      ReactGA.event(GA_EVENT_POSTSCORE, {
+        score: numGuess,
+        level: solution.index,
+      })
+    } else if (gameMode === GAME_MODE_UNLIMITED) {
+      ReactGA.event({
+        category: GA_CATEGORY_GAME,
+        action: `game_finish_${puzzleId}`,
+        value: numGuess,
+      })
+    }
   }
 
   const onSelectCell = (index: number) => {
@@ -603,13 +653,13 @@ function App() {
       setCurrentGuess('')
 
       if (winningWord) {
-        gameFinishGA(true)
+        gameFinishGA(true, guesses.length + 1)
         setStats(addStatsForCompletedGame(stats, guesses.length))
         return setIsGameWon(true)
       }
 
       if (guesses.length === MAX_CHALLENGES - 1) {
-        gameFinishGA(false)
+        gameFinishGA(false, -1)
         setStats(addStatsForCompletedGame(stats, guesses.length + 1))
         setIsGameLost(true)
         showErrorAlert(CORRECT_WORD_MESSAGE(solution.word), {
